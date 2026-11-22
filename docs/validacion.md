@@ -85,6 +85,16 @@ Esta es una síntesis agregada del reporte del equipo. No asigna respuestas conc
 
 ## Registro detallado: compradores
 
+### Resultado general de la ronda
+
+| Señal | Resultado |
+|---|---|
+| Entrevistas en La Paz y El Alto | ✅ 10 personas en total entre compradores e importadoras |
+| Recepción general de la propuesta | ✅ Positiva, según el equipo |
+| Evaluación de las conversaciones | ✅ Salieron bien |
+
+Estos checks resumen la ronda completa; no significan que las 10 personas fueran compradores ni reemplazan las respuestas individuales de C1–C8. El desglose y las notas de compradores quedan pendientes de sistematizar.
+
 | Código | Ciudad | Fecha | Qué compró / monto (C1) | % adelantado (C2) | Problema (C3) | Recuperó dinero (C4) | Dejó de comprar (C5) | Elegiría pago protegido (C6) | Acepta anticipo (C7) | Acceso preferido (C8) | Cita |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | C-01 | | | | | | | | | | | |
