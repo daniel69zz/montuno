@@ -1,0 +1,177 @@
+### Colección de ejemplo (REST Client de VS Code / JetBrains HTTP Client).
+### Flujo completo de la guía §5. Las firmas (SEP-53 y XDR) se hacen en el CLIENTE; ver docs/signing-flow.md.
+@base = http://localhost:3000/api/v1
+@token = REEMPLAZAR_TRAS_LOGIN
+@orderId = REEMPLAZAR
+@checkoutToken = REEMPLAZAR
+
+### 1. Login por email OTP (SIMULADO: devCode vuelve en la respuesta fuera de producción)
+POST {{base}}/auth/otp/request
+Content-Type: application/json
+
+{ "email": "importadora@example.local" }
+
+###
+POST {{base}}/auth/session
+Content-Type: application/json
+
+{ "provider": "mock-email-otp", "email": "importadora@example.local", "code": "123456" }
+
+### 1b. Login con wallet Stellar (SEP-53, criptografía real)
+POST {{base}}/auth/wallet/challenge
+Content-Type: application/json
+
+{ "address": "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6" }
+
+### firma el campo "message" con: stellar message sign "<message>" --sign-with-key ie-buyer
+POST {{base}}/auth/session
+Content-Type: application/json
+
+{ "provider": "stellar-wallet", "challengeId": "UUID", "signature": "BASE64" }
+
+### 2. Vincular wallet (prueba de posesión SEP-53)
+POST {{base}}/me/wallets/challenge
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "address": "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ" }
+
+###
+POST {{base}}/me/wallets/verify
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "challengeId": "UUID", "signature": "BASE64", "provider": "self-custody" }
+
+### 3. Registrar importadora (queda PENDING)
+POST {{base}}/importers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "publicName": "Importadora Ejemplo", "nit": "1234567" }
+
+### 4. (ADMIN) verificar y fijar límites — anticipo deshabilitado por defecto
+POST {{base}}/admin/importers/IMPORTER_ID/verify
+Authorization: Bearer {{token}}
+
+###
+PATCH {{base}}/admin/importers/IMPORTER_ID/limits
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "maxOrderAmountAtomic": "50000000000", "maxAdvanceBps": 8000, "allowedModes": ["FULL_ESCROW", "PARTIAL_ADVANCE"] }
+
+### 5. Wallet de cobro de la importadora
+POST {{base}}/importers/me/wallet/verify
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "walletId": "WALLET_UUID" }
+
+### 6. Cotización PARTIAL: 1.200 total, 900 de anticipo (unidades atómicas, 7 decimales)
+POST {{base}}/quotes
+Authorization: Bearer {{token}}
+Idempotency-Key: quote-0001-ejemplo
+Content-Type: application/json
+
+{
+  "productUrl": "https://www.amazon.com/dp/B0EXAMPLE",
+  "productName": "MacBook Air 13",
+  "productVariant": "M4 16GB",
+  "quantity": 1,
+  "destinationCity": "La Paz",
+  "deliveryEstimateDays": 20,
+  "purchaseTerms": "Compra en Amazon US; courier a La Paz.",
+  "fiatPrice": "8352.00",
+  "fiatCurrency": "BOB",
+  "amountAtomic": "12000000000",
+  "serviceFeeAtomic": "200000000",
+  "fx": { "rate": "6.96", "spreadBps": 50, "source": "manual", "expiresAt": "2026-12-01T00:00:00Z" },
+  "escrowMode": "PARTIAL_ADVANCE",
+  "advanceAmountAtomic": "9000000000",
+  "expiresAt": "2026-12-01T00:00:00Z",
+  "fulfillmentDeadline": "2027-01-01T00:00:00Z"
+}
+
+### 7. Publicar: congela términos y devuelve el token del checkout (una sola vez)
+POST {{base}}/quotes/QUOTE_ID/publish
+Authorization: Bearer {{token}}
+Idempotency-Key: publish-0001-ejemplo
+
+### 8. Vista pública sanitizada
+GET {{base}}/checkout/{{checkoutToken}}
+
+### 9. Comprador acepta (termsHash y disclosure* vienen de la vista)
+POST {{base}}/checkout/{{checkoutToken}}/accept
+Authorization: Bearer {{token}}
+Idempotency-Key: accept-0001-ejemplo
+Content-Type: application/json
+
+{ "termsHash": "HEX64", "buyerWallet": "G...", "acceptTerms": true, "disclosureVersion": "partial/v1", "disclosureHash": "HEX64" }
+
+### 10. (opcional, SIMULADO) rampa BOB -> token a la wallet
+POST {{base}}/orders/{{orderId}}/ramp/quote
+Authorization: Bearer {{token}}
+
+### 11. Preparar funding (devuelve XDR sin firmar + txHash)
+POST {{base}}/orders/{{orderId}}/escrow/prepare-funding
+Authorization: Bearer {{token}}
+Idempotency-Key: fund-0001-ejemplo
+
+### 12. Enviar la tx FIRMADA por la wallet del comprador
+POST {{base}}/orders/{{orderId}}/escrow/submit
+Authorization: Bearer {{token}}
+Idempotency-Key: submit-0001-ejemplo
+Content-Type: application/json
+
+{ "preparedId": "UUID", "signedXdr": "BASE64_XDR_FIRMADO" }
+
+### 13. Estado on-chain + proyección + txs con enlace al explorador
+GET {{base}}/orders/{{orderId}}/escrow
+Authorization: Bearer {{token}}
+
+### 14. (importadora) anticipo antes de comprar — solo PARTIAL
+POST {{base}}/orders/{{orderId}}/advance/prepare
+Authorization: Bearer {{token}}
+Idempotency-Key: adv-0001-ejemplo
+
+### 15. Logística (solo avanza; ACCEPTED solo por confirmación on-chain)
+PATCH {{base}}/orders/{{orderId}}/logistics
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "state": "IN_TRANSIT", "trackingNumber": "TRK-12345", "carrier": "DHL" }
+
+### 16. Evidencia: URL de subida prefirmada (luego PUT del archivo y confirm-upload)
+POST {{base}}/orders/{{orderId}}/evidence/upload-url
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "type": "RECEIPT", "mimeType": "application/pdf", "sizeBytes": 12345, "sha256": "HEX64" }
+
+### 17. Comprador confirma entrega (libera SOLO el saldo retenido)
+POST {{base}}/orders/{{orderId}}/delivery/prepare-confirmation
+Authorization: Bearer {{token}}
+Idempotency-Key: deliv-0001-ejemplo
+
+### 18. Disputa (razón privada off-chain; on-chain solo su hash)
+POST {{base}}/orders/{{orderId}}/disputes
+Authorization: Bearer {{token}}
+Idempotency-Key: disp-0001-ejemplo
+Content-Type: application/json
+
+{ "reason": "El producto no llegó en el plazo pactado." }
+
+### 19. (árbitro) resolución: debe sumar EXACTAMENTE el saldo retenido
+POST {{base}}/orders/{{orderId}}/disputes/DISPUTE_ID/prepare-resolution
+Authorization: Bearer {{token}}
+Idempotency-Key: resol-0001-ejemplo
+Content-Type: application/json
+
+{ "refundToBuyerAtomic": "3000000000", "releaseToImporterAtomic": "0", "resolution": "Devolución del saldo retenido." }
+
+### Operación
+GET http://localhost:3000/health
+
+###
+GET http://localhost:3000/ready

@@ -1,0 +1,509 @@
+// Esquema de datos off-chain. La fuente de verdad financiera es el contrato;
+// las columnas *Atomic de Order son una PROYECCIÓN materializada de get_order.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ImporterStatus {
+  PENDING
+  VERIFIED
+  SUSPENDED
+}
+
+enum ImporterRole {
+  OWNER
+  OPERATOR
+}
+
+enum PlatformRole {
+  ADMIN
+  ARBITER
+}
+
+enum EscrowMode {
+  FULL_ESCROW
+  PARTIAL_ADVANCE
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+enum PaymentState {
+  NOT_STARTED
+  RAMP_PENDING
+  WALLET_FUNDED
+  ESCROW_PENDING
+  ESCROW_FUNDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum LogisticState {
+  NOT_PURCHASED
+  PURCHASED
+  IN_TRANSIT
+  ARRIVED_BOLIVIA
+  READY_FOR_DELIVERY
+  DELIVERED
+  ACCEPTED
+}
+
+enum DisputeState {
+  NONE
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+}
+
+enum OnchainStatus {
+  NONE
+  FUNDED
+  ADVANCE_PAID
+  DISPUTED
+  SETTLED
+  CANCELLED
+}
+
+enum PreparedTxStatus {
+  PREPARED
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  EXPIRED
+}
+
+enum EvidenceType {
+  RECEIPT
+  TRACKING
+  DELIVERY_PROOF
+  OTHER
+}
+
+enum RampStatus {
+  QUOTED
+  PENDING
+  PROCESSING // reclamada para entregar tokens; nunca se re-paga automáticamente
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String?   @unique // normalizado (lowercase, trim)
+  emailVerifiedAt  DateTime?
+  phone            String?
+  displayName      String?
+  identityProvider String // "mock-email-otp" | "stellar-wallet" | futuro "pollar"
+  externalSubject  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  wallets        UserWallet[]
+  platformRoles  UserPlatformRole[]
+  memberships    ImporterMember[]
+  ordersAsBuyer  Order[]            @relation("BuyerOrders")
+  ownedImporters Importer[]         @relation("ImporterOwner")
+  kycRecords     KycRecord[]
+
+  @@unique([identityProvider, externalSubject])
+}
+
+model UserPlatformRole {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @db.Uuid
+  role      PlatformRole
+  grantedBy String?      @db.Uuid
+  createdAt DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+}
+
+model UserWallet {
+  id         String     @id @default(uuid()) @db.Uuid
+  userId     String     @db.Uuid
+  address    String // G... (cuenta Stellar)
+  network    String // "testnet"
+  provider   String // "self-custody" | "pollar" | "cli-test"
+  verifiedAt DateTime? // solo tras prueba de posesión (SEP-53)
+  createdAt  DateTime   @default(now())
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  importers  Importer[]
+
+  @@unique([address, network])
+  @@index([userId])
+}
+
+model AuthChallenge {
+  id         String    @id @default(uuid()) @db.Uuid
+  kind       String // "email-otp" | "wallet-sep53"
+  subject    String // email normalizado o address
+  userId     String?   @db.Uuid // para vincular wallet a usuario autenticado
+  secretHash String // hash del OTP o del mensaje desafío
+  message    String? // mensaje SEP-53 a firmar
+  attempts   Int       @default(0)
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([kind, subject])
+}
+
+model Importer {
+  id                   String         @id @default(uuid()) @db.Uuid
+  ownerUserId          String         @db.Uuid
+  publicName           String
+  nit                  String?
+  status               ImporterStatus @default(PENDING)
+  walletId             String?        @db.Uuid
+  maxOrderAmountAtomic BigInt         @default(0) // 0 = no puede publicar hasta revisión manual
+  maxAdvanceBps        Int            @default(0) // anticipo deshabilitado por defecto
+  allowedModes         EscrowMode[]   @default([FULL_ESCROW])
+  reviewedBy           String?        @db.Uuid
+  reviewedAt           DateTime?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  owner   User             @relation("ImporterOwner", fields: [ownerUserId], references: [id])
+  wallet  UserWallet?      @relation(fields: [walletId], references: [id])
+  members ImporterMember[]
+  quotes  Quote[]
+  orders  Order[]
+
+  @@index([ownerUserId])
+}
+
+model ImporterMember {
+  id          String       @id @default(uuid()) @db.Uuid
+  importerId  String       @db.Uuid
+  userId      String       @db.Uuid
+  role        ImporterRole
+  permissions String[]     @default([])
+  addedBy     String?      @db.Uuid
+  createdAt   DateTime     @default(now())
+  importer    Importer     @relation(fields: [importerId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([importerId, userId])
+  @@index([userId])
+}
+
+model Quote {
+  id                    String      @id @default(uuid()) @db.Uuid
+  importerId            String      @db.Uuid
+  createdBy             String      @db.Uuid
+  productUrl            String
+  productName           String
+  productVariant        String?
+  quantity              Int
+  destinationCity       String
+  deliveryEstimateDays  Int
+  purchaseTerms         String
+  fiatPrice             Decimal     @db.Decimal(20, 2)
+  fiatCurrency          String
+  amountAtomic          BigInt // unidades atómicas EXACTAS del token que deben entrar al contrato
+  tokenContractId       String
+  tokenDecimals         Int
+  serviceFeeAtomic      BigInt      @default(0)
+  rampFeeAtomic         BigInt      @default(0)
+  fxRate                Decimal?    @db.Decimal(24, 10)
+  fxSpreadBps           Int?
+  fxSource              String?
+  fxQuoteExpiresAt      DateTime?
+  escrowMode            EscrowMode
+  advanceAmountAtomic   BigInt      @default(0)
+  fulfillmentDeadline   DateTime
+  riskDisclosureVersion String
+  termsHash             String? // se fija al publicar
+  canonicalTerms        Json?
+  status                QuoteStatus @default(DRAFT)
+  expiresAt             DateTime
+  version               Int         @default(1)
+  publishedAt           DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  importer      Importer       @relation(fields: [importerId], references: [id])
+  checkoutLinks CheckoutLink[]
+  order         Order?
+
+  @@index([importerId])
+  @@index([status, expiresAt])
+}
+
+model CheckoutLink {
+  id              String    @id @default(uuid()) @db.Uuid
+  quoteId         String    @db.Uuid
+  opaqueTokenHash String    @unique // sha256 del token; el token nunca se guarda
+  expiresAt       DateTime
+  redeemedAt      DateTime?
+  revokedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  quote           Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
+}
+
+model Order {
+  id                    String        @id @default(uuid()) @db.Uuid
+  quoteId               String        @unique @db.Uuid // una orden por cotización
+  buyerId               String        @db.Uuid
+  importerId            String        @db.Uuid
+  buyerWallet           String
+  importerWallet        String
+  arbiterWallet         String
+  network               String
+  escrowContractId      String
+  tokenContractId       String
+  onchainOrderId        String        @unique // hex 32 bytes
+  termsHash             String
+  escrowMode            EscrowMode
+  amountAtomic          BigInt
+  advanceAmountAtomic   BigInt
+  fundingDeadline       DateTime
+  fulfillmentDeadline   DateTime
+  simulated             Boolean       @default(false) // true si el gateway de escrow es simulado
+  paymentState          PaymentState  @default(NOT_STARTED)
+  logisticState         LogisticState @default(NOT_PURCHASED)
+  disputeState          DisputeState  @default(NONE)
+  // proyección del contrato
+  onchainStatus         OnchainStatus @default(NONE)
+  advanceReleasedAtomic BigInt        @default(0)
+  sellerReleasedAtomic  BigInt        @default(0)
+  buyerRefundedAtomic   BigInt        @default(0)
+  remainingEscrowAtomic BigInt        @default(0)
+  lastSyncedAt          DateTime?
+  lastSyncedLedger      Int?
+  paidAt                DateTime?
+  trackingNumber        String?
+  carrier               String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  quote       Quote                 @relation(fields: [quoteId], references: [id])
+  buyer       User                  @relation("BuyerOrders", fields: [buyerId], references: [id])
+  importer    Importer              @relation(fields: [importerId], references: [id])
+  consents    ConsentRecord[]
+  ramps       RampTransaction[]
+  escrowTxs   EscrowTransaction[]
+  preparedTxs PreparedTransaction[]
+  evidence    PurchaseEvidence[]
+  disputes    Dispute[]
+  events      OrderEvent[]
+
+  @@index([buyerId])
+  @@index([importerId])
+  @@index([paymentState])
+}
+
+model ConsentRecord {
+  id                    String   @id @default(uuid()) @db.Uuid
+  orderId               String   @db.Uuid
+  userId                String   @db.Uuid
+  termsHash             String
+  disclosureVersion     String
+  disclosureText        String // texto exacto mostrado
+  disclosureHash        String
+  advanceAmountAtomic   BigInt
+  protectedAmountAtomic BigInt
+  ipHash                String?
+  userAgent             String?
+  createdAt             DateTime @default(now())
+  order                 Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @db.Uuid
+  kind      String // "logistic" | "payment" | "dispute" | "onchain"
+  from      String?
+  to        String
+  actorId   String?  @db.Uuid
+  note      String?
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+}
+
+model RampTransaction {
+  id                String     @id @default(uuid()) @db.Uuid
+  orderId           String     @db.Uuid
+  provider          String
+  corridor          String
+  providerReference String?    @unique
+  amountFiat        Decimal    @db.Decimal(20, 2)
+  fiatCurrency      String
+  asset             String
+  expectedAtomic    BigInt
+  destinationWallet String
+  status            RampStatus
+  simulated         Boolean
+  quoteExpiresAt    DateTime?
+  webhookReference  String?
+  deliveryTxHash    String?    @unique // tx on-chain con la que la caja entregó el token a la wallet
+  deliveryError     String?
+  rawSafeMetadata   Json?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  order             Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model PreparedTransaction {
+  id            String           @id @default(uuid()) @db.Uuid
+  orderId       String           @db.Uuid
+  action        String // nombre de la función del contrato
+  signerRole    String // BUYER | IMPORTER | ARBITER
+  signerAddress String
+  signerUserId  String           @db.Uuid
+  txHash        String           @unique // hash del cuerpo de la tx (no cambia al firmar)
+  unsignedXdr   String
+  args          Json // argumentos validados (strings)
+  format        String // "stellar-xdr" | "simulated-json"
+  status        PreparedTxStatus @default(PREPARED)
+  expiresAt     DateTime
+  submittedAt   DateTime?
+  confirmedAt   DateTime?
+  ledger        Int?
+  error         String?
+  disputeId     String?          @db.Uuid
+  createdAt     DateTime         @default(now())
+  order         Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, action])
+}
+
+model EscrowTransaction {
+  id             String    @id @default(uuid()) @db.Uuid
+  orderId        String    @db.Uuid
+  txHash         String
+  ledger         Int?
+  eventType      String
+  amountAtomic   BigInt?
+  network        String
+  status         String // CONFIRMED
+  confirmationAt DateTime?
+  uniqueEventKey String    @unique // txHash:eventType => aplicación exactamente-una-vez
+  source         String // "submit" | "indexer" | "reconciliation"
+  createdAt      DateTime  @default(now())
+  order          Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model PurchaseEvidence {
+  id          String       @id @default(uuid()) @db.Uuid
+  orderId     String       @db.Uuid
+  type        EvidenceType
+  objectKey   String       @unique
+  sha256      String
+  mimeType    String
+  sizeBytes   Int
+  uploadedBy  String       @db.Uuid
+  confirmedAt DateTime?
+  createdAt   DateTime     @default(now())
+  order       Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Dispute {
+  id                      String       @id @default(uuid()) @db.Uuid
+  orderId                 String       @db.Uuid
+  openedBy                String       @db.Uuid
+  openedByRole            String // BUYER | IMPORTER
+  reason                  String // privado, nunca on-chain
+  reasonHash              String // on-chain
+  status                  DisputeState @default(OPEN)
+  onchainConfirmedAt      DateTime?
+  resolution              String?
+  resolutionHash          String?
+  refundToBuyerAtomic     BigInt?
+  releaseToImporterAtomic BigInt?
+  resolvedBy              String?      @db.Uuid
+  resolvedAt              DateTime?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  order                   Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model KycRecord {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  provider          String
+  corridorId        String   @default("")
+  status            String // none | pending | approved | rejected | expired
+  providerReference String?
+  simulated         Boolean
+  updatedAt         DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider, corridorId])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid()) @db.Uuid
+  actorId       String?  @db.Uuid
+  action        String
+  resourceType  String
+  resourceId    String?
+  before        Json?
+  after         Json?
+  correlationId String?
+  createdAt     DateTime @default(now())
+
+  @@index([resourceType, resourceId])
+  @@index([actorId])
+}
+
+model IdempotencyKey {
+  id           String   @id @default(uuid()) @db.Uuid
+  scope        String // userId + método + ruta
+  key          String
+  requestHash  String
+  status       String // IN_PROGRESS | COMPLETED
+  responseCode Int?
+  responseBody Json?
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+
+  @@unique([scope, key])
+}
+
+model WebhookReceipt {
+  id          String    @id @default(uuid()) @db.Uuid
+  provider    String
+  externalId  String
+  payloadHash String
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, externalId])
+}
+
+model IndexerCheckpoint {
+  id         String   @id
+  lastLedger Int
+  cursor     String?
+  updatedAt  DateTime @updatedAt
+}

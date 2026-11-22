@@ -1,0 +1,137 @@
+{
+  "ranAt": "2026-11-22T14:09:59.034Z",
+  "contractId": "CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR",
+  "steps": [
+    {
+      "step": "FULL_ESCROW:ramp_delivery_from_caja",
+      "txHash": "3e27777adb611fb47e6e683098fb6f374491612db8f687394c76eed13c7fc15b",
+      "explorer": "https://stellar.expert/explorer/testnet/tx/3e27777adb611fb47e6e683098fb6f374491612db8f687394c76eed13c7fc15b"
+    },
+    {
+      "step": "full:create_and_fund",
+      "txHash": "d4d0134d117d1fadc9422b2132ff78178b67eb58be68881c145330d1890a9d2d",
+      "ledger": 5866594,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/d4d0134d117d1fadc9422b2132ff78178b67eb58be68881c145330d1890a9d2d"
+    },
+    {
+      "step": "full:confirm_delivery_and_release",
+      "txHash": "0a2ac6ea640a5916fd441c091d8636a72b0024647486aa576d9c53ee84668442",
+      "ledger": 5866595,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/0a2ac6ea640a5916fd441c091d8636a72b0024647486aa576d9c53ee84668442"
+    },
+    {
+      "step": "PARTIAL_ADVANCE:ramp_delivery_from_caja",
+      "txHash": "94821a2f063d6c83f4ab43e975536232abde0706c8559ba38f540bd3369070db",
+      "explorer": "https://stellar.expert/explorer/testnet/tx/94821a2f063d6c83f4ab43e975536232abde0706c8559ba38f540bd3369070db"
+    },
+    {
+      "step": "partial:create_and_fund",
+      "txHash": "0cad6a7eb4d8f52b5a77596e3f603304edc094c1682bde06e7f7d1153b592d80",
+      "ledger": 5866597,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/0cad6a7eb4d8f52b5a77596e3f603304edc094c1682bde06e7f7d1153b592d80"
+    },
+    {
+      "step": "partial:claim_advance",
+      "txHash": "b47fdc01814d8df9db21cc2203135efa81cd7305026c0d3ae540d41e9807b409",
+      "ledger": 5866598,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/b47fdc01814d8df9db21cc2203135efa81cd7305026c0d3ae540d41e9807b409"
+    },
+    {
+      "step": "partial:confirm_delivery_and_release",
+      "txHash": "a9801a1ded2cdc2cae8a3df3531c8a15b77f3d9dd2db9036b035828598c33643",
+      "ledger": 5866599,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/a9801a1ded2cdc2cae8a3df3531c8a15b77f3d9dd2db9036b035828598c33643"
+    },
+    {
+      "step": "PARTIAL_ADVANCE:ramp_delivery_from_caja",
+      "txHash": "4cabbdad9d951776e1d65ea157b4522580aacead0e9763fe8dfdb05e05e2bb20",
+      "explorer": "https://stellar.expert/explorer/testnet/tx/4cabbdad9d951776e1d65ea157b4522580aacead0e9763fe8dfdb05e05e2bb20"
+    },
+    {
+      "step": "dispute:create_and_fund",
+      "txHash": "28f59bdab3ac288594c605407e79de0fa49d4018882ba553d27c3ebfd2ff2961",
+      "ledger": 5866601,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/28f59bdab3ac288594c605407e79de0fa49d4018882ba553d27c3ebfd2ff2961"
+    },
+    {
+      "step": "dispute:claim_advance",
+      "txHash": "927ac56475b0708a281f218748c4d9d73b841776bd720cadc3a0b0a1d492ac69",
+      "ledger": 5866602,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/927ac56475b0708a281f218748c4d9d73b841776bd720cadc3a0b0a1d492ac69"
+    },
+    {
+      "step": "dispute:open_dispute",
+      "txHash": "fd4d69d38d51976ada69492004d347c1f8d9abf26e552a9758fdc6d65b0ea575",
+      "ledger": 5866603,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/fd4d69d38d51976ada69492004d347c1f8d9abf26e552a9758fdc6d65b0ea575"
+    },
+    {
+      "step": "dispute:resolve_dispute",
+      "txHash": "7911055e0fb7ec6e4d12cd75d5d36fb9b2b7edf5d98ba9765d15f30fa031c3cb",
+      "ledger": 5866604,
+      "explorer": "https://stellar.expert/explorer/testnet/tx/7911055e0fb7ec6e4d12cd75d5d36fb9b2b7edf5d98ba9765d15f30fa031c3cb"
+    }
+  ],
+  "indexer": {
+    "firstPass": {
+      "events": 33,
+      "applied": 13
+    },
+    "escrowTransactions": 13,
+    "byType": [
+      {
+        "_count": 2,
+        "eventType": "advance_released",
+        "source": "submit"
+      },
+      {
+        "_count": 2,
+        "eventType": "delivery_confirmed",
+        "source": "submit"
+      },
+      {
+        "_count": 1,
+        "eventType": "dispute_opened",
+        "source": "submit"
+      },
+      {
+        "_count": 1,
+        "eventType": "dispute_resolved",
+        "source": "submit"
+      },
+      {
+        "_count": 3,
+        "eventType": "escrow_created",
+        "source": "submit"
+      },
+      {
+        "_count": 3,
+        "eventType": "funded",
+        "source": "submit"
+      },
+      {
+        "_count": 1,
+        "eventType": "refunded",
+        "source": "indexer"
+      }
+    ],
+    "reconcile": {
+      "checked": 0,
+      "repaired": 0,
+      "submitted": {
+        "checked": 0,
+        "resolved": 0
+      },
+      "deliveries": {
+        "checked": 0,
+        "resolved": 0
+      }
+    }
+  },
+  "orders": {
+    "full": "459a2e57-0d0c-49c4-a0fd-8c4225a744b9",
+    "partial": "cb29c7b0-cfe9-4a56-bcf7-47d804a85aed",
+    "disputeAfterAdvance": "233b0c0f-9309-4ca0-bbe4-ed26e9e47b19"
+  },
+  "result": "OK"
+}

@@ -1,0 +1,13 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "deployedAt": "2026-11-22T14:01:56Z",
+  "tokenMode": "circle-usdc",
+  "escrowContractId": "CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR",
+  "wasmSha256": "d369daf5820a9f1b44ba0bffba29389ff4ffdeea67554db442f6e3c3742a406d",
+  "token": { "asset": "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5", "contractId": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA", "decimals": 7, "note": "USDC de Circle de TESTNET (sin valor real); obtenido en el DEX de testnet con XLM de friendbot" },
+  "maxAdvanceBps": 9000,
+  "accounts": { "admin": "GARZT3I7ZW2I7SZTF7EDFSYYK3QZTMQVNTKKBOO27UGQMGVU3IOLA5A5", "arbiter": "GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ", "buyer": "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", "importer": "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ", "caja": "GCSO4Z366IA37LNFB4DNSKKZ5HN73RKDL2RHERTF2NNEVDG76KKMQ3GV" },
+  "cliIdentities": { "admin": "ie-admin", "arbiter": "ie-arbiter", "buyer": "ie-buyer", "importer": "ie-importer", "caja": "ie-caja" },
+  "transactions": {"trustline_ie-caja":"7ed270aa143c9e91b80309d86d8d7a1267b3dcbeed37e98dc751f9f8618773b3","trustline_ie-buyer":"9915bf283e5210c5f61e3f4ead01b748a87532a25ed0926424668fadd4245f95","trustline_ie-importer":"2214671fa07f7f7535e3e5ca5010188f7ce9f5ef525ac27ae3fa9248eb24d9da","caja_buys_usdc_on_dex":"257e8ca03eb40efc17af6a8cf616828661df34d91f383cd218284f9b93e2bc7d","buyer_topup_from_caja":"c501a5cfe69499fa1bcb96dbe2d834d9525179a071f32738023dc66af1d1a4fa","escrow_deploy":"92b1b1998dab40bd5bd89a978603b3503dc28e88aca1934acc25f2f75ffa277a"}
+}

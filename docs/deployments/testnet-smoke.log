@@ -1,0 +1,70 @@
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 3a5111ff59971dba79aff41ec1bfdab677f695bf6148bc8866167ae3a92274d4
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/3a5111ff59971dba79aff41ec1bfdab677f695bf6148bc8866167ae3a92274d4
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"120000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: EscrowCreated (escrow_created), order_id: "4e819269fd8427d861450f1ccb40db2dfc8998b037a4f73d6b106e8a648c098d", buyer: "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", importer: "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ", arbiter: "GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ", mode: 0, amount_total: "120000000", advance_amount: "0", terms_hash: "1bd9da38609cb540b9d6c0262f3b1c58bcbb55601d45ddf9bcd8a07bc1ea4af5"
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: Funded (funded), order_id: "4e819269fd8427d861450f1ccb40db2dfc8998b037a4f73d6b106e8a648c098d", amount: "120000000"
+❌ error: transaction simulation failed: HostError: Error(Contract, #12)
+ℹ️ Simulating transaction…
+❌ error: Missing signing key for account GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: a85bde6c595afed5bbe69f965eb6912c00b700157d3bef67c9205a11e5b968d1
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/a85bde6c595afed5bbe69f965eb6912c00b700157d3bef67c9205a11e5b968d1
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"address":"GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"120000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: DeliveryConfirmed (delivery_confirmed), order_id: "4e819269fd8427d861450f1ccb40db2dfc8998b037a4f73d6b106e8a648c098d", released_to_importer: "120000000"
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: ed41daa45f55433deb81e5d82b9a72e97a685d9f0e5ea158bda0aa4c8ef00b6a
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/ed41daa45f55433deb81e5d82b9a72e97a685d9f0e5ea158bda0aa4c8ef00b6a
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"120000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: EscrowCreated (escrow_created), order_id: "99036ab6b49ea90f61d4f1c1b9d6c66bdaf04d3b3b6ff28e9c0bb1a544e19959", buyer: "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", importer: "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ", arbiter: "GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ", mode: 1, amount_total: "120000000", advance_amount: "90000000", terms_hash: "fe460a573402746cc94f9d2e47acf79f3e9ee3fbdfefaf1d98480c21c6c0ad1e"
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: Funded (funded), order_id: "99036ab6b49ea90f61d4f1c1b9d6c66bdaf04d3b3b6ff28e9c0bb1a544e19959", amount: "120000000"
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 47181264de340c8285bac64fc4c735c69c55740a48419f5972e5aacb87261f18
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/47181264de340c8285bac64fc4c735c69c55740a48419f5972e5aacb87261f18
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"address":"GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"90000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: AdvanceReleased (advance_released), order_id: "99036ab6b49ea90f61d4f1c1b9d6c66bdaf04d3b3b6ff28e9c0bb1a544e19959", amount: "90000000", remaining_escrow: "30000000"
+❌ error: transaction simulation failed: HostError: Error(Contract, #13)
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: cfa2b514e64f61d6e9bce5a5e0749521affec428d015a10aad0b31e155c3c6dc
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/cfa2b514e64f61d6e9bce5a5e0749521affec428d015a10aad0b31e155c3c6dc
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"address":"GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"30000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: DeliveryConfirmed (delivery_confirmed), order_id: "99036ab6b49ea90f61d4f1c1b9d6c66bdaf04d3b3b6ff28e9c0bb1a544e19959", released_to_importer: "30000000"
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 5aac740d926440dce09186738254919a77b62e46249c94ce3d5fa70fe82613a6
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/5aac740d926440dce09186738254919a77b62e46249c94ce3d5fa70fe82613a6
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"120000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: EscrowCreated (escrow_created), order_id: "637072f28f8daadd00cceb9496ea093ed649bc4d2638cd182f769c5c600d0311", buyer: "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", importer: "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ", arbiter: "GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ", mode: 1, amount_total: "120000000", advance_amount: "90000000", terms_hash: "57161130ed21a7589a81c89c0137a12578b0da8d20a22f05f2f8d5434715cfe1"
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: Funded (funded), order_id: "637072f28f8daadd00cceb9496ea093ed649bc4d2638cd182f769c5c600d0311", amount: "120000000"
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 4170a80d37b499f2eec51bc3b699a60de7bc47e2ae85c0b38da268f888ae2d1b
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/4170a80d37b499f2eec51bc3b699a60de7bc47e2ae85c0b38da268f888ae2d1b
+📅 CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA - Success - Event: [{"symbol":"transfer"},{"address":"CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR"},{"address":"GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ"},{"string":"USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"}] = {"i128":"90000000"}
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: AdvanceReleased (advance_released), order_id: "637072f28f8daadd00cceb9496ea093ed649bc4d2638cd182f769c5c600d0311", amount: "90000000", remaining_escrow: "30000000"
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 849575250e1d02df40062cb64e7d36be8bf8e02962b3b9af1376fe3b032e16ab
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/849575250e1d02df40062cb64e7d36be8bf8e02962b3b9af1376fe3b032e16ab
+📅 CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR - Success - Event: DisputeOpened (dispute_opened), order_id: "637072f28f8daadd00cceb9496ea093ed649bc4d2638cd182f769c5c600d0311", opened_by: "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", reason_hash: "1d0955a1de95d346a19e7452ebfd293343f700a28c82e073f8a0ca10005cd7d0", remaining_escrow: "30000000"
+ℹ️ Simulating transaction…
+❌ error: Missing signing key for account GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ
+❌ error: transaction simulation failed: HostError: Error(Contract, #16)
+❌ error: transaction simulation failed: HostError: Error(Contract, #15)
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: c4f0302d7fdd87bee513caafd6279dab030b99bc3aebc6222bf4c43f015962b7
+🌎 Sending transaction…
+❌ error: client error (SendRequest)

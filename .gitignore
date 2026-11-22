@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+contracts/target/
+apps/api/storage/
+apps/api/src/generated/
+*.log
+!docs/deployments/*.log
+.DS_Store
+# snapshots que genera soroban-sdk testutils en cada cargo test
+contracts/**/test_snapshots/

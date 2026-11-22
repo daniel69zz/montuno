@@ -1,0 +1,12 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "deployedAt": "2026-11-22T07:49:02Z",
+  "escrowContractId": "CCFL2AIJNQ2O5NGXPJXZTJXYYBYIXP5SJSUKFMWEC7BEMORRRI45PXML",
+  "wasmSha256": "d369daf5820a9f1b44ba0bffba29389ff4ffdeea67554db442f6e3c3742a406d",
+  "token": { "asset": "TESTUSD:GBKDEDMILAWZWPFUK4QYNXRYK5UME4YDRBL77LTY34ZETKBJXL47VYML", "contractId": "CDEERNBC7NDHV5HHZYO2SEM7FW3LGG6XYHGICM3TWTHRX3JXTBZXVZQP", "decimals": 7, "note": "Activo de prueba sin valor emitido por ie-issuer" },
+  "maxAdvanceBps": 9000,
+  "accounts": { "admin": "GARZT3I7ZW2I7SZTF7EDFSYYK3QZTMQVNTKKBOO27UGQMGVU3IOLA5A5", "arbiter": "GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ", "buyer": "GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6", "importer": "GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ", "issuer": "GBKDEDMILAWZWPFUK4QYNXRYK5UME4YDRBL77LTY34ZETKBJXL47VYML" },
+  "cliIdentities": { "admin": "ie-admin", "arbiter": "ie-arbiter", "buyer": "ie-buyer", "importer": "ie-importer", "issuer": "ie-issuer" },
+  "transactions": {"sac_deploy":"7d30442a4c1376760fbae1f177c3dc0e7feadf6b429023e9be8f1ff336bce9c0","trustline_ie-buyer":"d7df241a71d877f7549b4d001fb8ead1305253536086d5130e9f96488f54b613","trustline_ie-importer":"869a1061d658c5e06458c3be84c3600b7cf51b49eb660bdbe9e7e7ba20485f91","buyer_topup":"5057db4398fea584fdc4f14c8943b4a181ffff0898631f365be33970c05a4e0f","escrow_deploy":"05d36b8537a7412e617ae26bffd897d7a38a8d7dfd2f2fe65a372b92c47abc84"}
+}

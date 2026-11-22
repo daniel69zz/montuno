@@ -1,0 +1,59 @@
+[deploy] identidad ie-admin existe: GARZT3I7ZW2I7SZTF7EDFSYYK3QZTMQVNTKKBOO27UGQMGVU3IOLA5A5
+[deploy] identidad ie-arbiter existe: GDTV2M5CAZ4E5AIXDHQARM7UUPJ4KGJVPXLU5S2D3ZVPTMETNXW6ACKQ
+[deploy] identidad ie-buyer existe: GACPZZRWGFNNZDQDJ2LWYJITSQJFDZFRDIVO2SWWPLS4MZ6LXZ22FAA6
+[deploy] identidad ie-importer existe: GCHEQIGMYICXZ6GBPZYWRNNYQQBYZ565DDOKSXXUJFVEYIBDOQMV74SQ
+[deploy] creando identidad ie-caja
+[deploy] USDC de Circle (testnet), SAC CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA
+[deploy] trustline ie-caja -> USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5
+ℹ️ Signing transaction: 7ed270aa143c9e91b80309d86d8d7a1267b3dcbeed37e98dc751f9f8618773b3
+
+[deploy] trustline ie-buyer -> USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5
+ℹ️ Signing transaction: 9915bf283e5210c5f61e3f4ead01b748a87532a25ed0926424668fadd4245f95
+
+[deploy] trustline ie-importer -> USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5
+ℹ️ Signing transaction: 2214671fa07f7f7535e3e5ca5010188f7ce9f5ef525ac27ae3fa9248eb24d9da
+
+[deploy] la caja compra 3000000000 stroops de USDC en el DEX de testnet (pagando XLM de friendbot)
+ℹ️ Signing transaction: 257e8ca03eb40efc17af6a8cf616828661df34d91f383cd218284f9b93e2bc7d
+
+[deploy] la caja entrega 600000000 stroops de USDC al comprador (para el smoke por CLI)
+ℹ️ Signing transaction: c501a5cfe69499fa1bcb96dbe2d834d9525179a071f32738023dc66af1d1a4fa
+
+[deploy] compilando contrato
+ℹ️ CARGO_BUILD_RUSTFLAGS=--remap-path-prefix=~/.cargo/registry/src= SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 cargo rustc --manifest-path=import_escrow/Cargo.toml --crate-type=cdylib --target=wasm32v1-none --release
+    Finished `release` profile [optimized] target(s) in 0.66s
+ℹ️ Build Summary:
+   Wasm File: target/wasm32v1-none/release/import_escrow.wasm (18778 bytes optimized (original size was 21200 bytes))
+   Wasm Hash: d369daf5820a9f1b44ba0bffba29389ff4ffdeea67554db442f6e3c3742a406d
+   Wasm Size: 18778 bytes optimized (original size was 21200 bytes)
+   Exported Functions: 13 found
+     • __constructor
+     • cancel_by_agreement
+     • claim_advance
+     • confirm_delivery_and_release
+     • create_and_fund
+     • extend_ttl
+     • get_config
+     • get_order
+     • has_order
+     • open_dispute
+     • resolve_dispute
+     • set_admin
+     • set_arbiter
+✅ Build Complete
+
+[deploy] desplegando escrow (token inmutable: CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA)
+ℹ️ Uploading contract WASM…
+ℹ️ Skipping install because wasm already installed
+ℹ️ Deploying contract using wasm hash d369daf5820a9f1b44ba0bffba29389ff4ffdeea67554db442f6e3c3742a406d
+ℹ️ Simulating transaction…
+ℹ️ Signing transaction: 92b1b1998dab40bd5bd89a978603b3503dc28e88aca1934acc25f2f75ffa277a
+🌎 Sending transaction…
+✅ Transaction submitted successfully!
+🔗 https://stellar.expert/explorer/testnet/tx/92b1b1998dab40bd5bd89a978603b3503dc28e88aca1934acc25f2f75ffa277a
+🔗 https://lab.stellar.org/r/testnet/contract/CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR
+✅ Deployed!
+⚠️ Overwriting existing alias 'ie-escrow' that currently links to contract ID: CCFL2AIJNQ2O5NGXPJXZTJXYYBYIXP5SJSUKFMWEC7BEMORRRI45PXML
+CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR
+[deploy] escrow: CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR
+[deploy] registro escrito en ./docs/deployments/testnet.json
