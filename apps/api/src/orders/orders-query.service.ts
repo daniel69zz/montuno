@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Order } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 import { atomicToDecimal } from '@montuno/shared';
 import type { AuthUser } from '../common/auth/auth.types';
 import { PrismaService } from '../common/prisma.service';
@@ -51,13 +51,45 @@ export class OrdersQueryService {
     @Inject(ESCROW_GATEWAY) private readonly gateway: StellarEscrowGateway,
   ) {}
 
-  present(o: Order, opts: { includeWallets?: boolean } = {}) {
+  static readonly include = {
+    quote: {
+      select: {
+        productName: true,
+        productVariant: true,
+        productUrl: true,
+        quantity: true,
+        destinationCity: true,
+        deliveryEstimateDays: true,
+        fiatPrice: true,
+        fiatCurrency: true,
+      },
+    },
+    importer: { select: { id: true, publicName: true } },
+  } satisfies Prisma.OrderInclude;
+
+  present(
+    o: Order & Partial<Prisma.OrderGetPayload<{ include: typeof OrdersQueryService.include }>>,
+    opts: { includeWallets?: boolean } = {},
+  ) {
     const dec = (v: bigint) => atomicToDecimal(v, 7);
     return toJson({
       id: o.id,
       quoteId: o.quoteId,
       importerId: o.importerId,
       summary: summarize(o),
+      engine: o.escrowEngine,
+      product: o.quote
+        ? {
+            name: o.quote.productName,
+            variant: o.quote.productVariant,
+            url: o.quote.productUrl,
+            quantity: o.quote.quantity,
+            destinationCity: o.quote.destinationCity,
+            deliveryEstimateDays: o.quote.deliveryEstimateDays,
+            fiat: { amount: o.quote.fiatPrice.toFixed(2), currency: o.quote.fiatCurrency },
+          }
+        : undefined,
+      provider: o.importer ? { id: o.importer.id, publicName: o.importer.publicName } : undefined,
       states: {
         payment: o.paymentState,
         logistic: o.logisticState,
@@ -113,6 +145,7 @@ export class OrdersQueryService {
   async listForBuyer(user: AuthUser) {
     const rows = await this.prisma.order.findMany({
       where: { buyerId: user.id },
+      include: OrdersQueryService.include,
       orderBy: { createdAt: 'desc' },
       take: 100,
     });
@@ -122,6 +155,7 @@ export class OrdersQueryService {
   async listForImporter(importerId: string) {
     const rows = await this.prisma.order.findMany({
       where: { importerId },
+      include: OrdersQueryService.include,
       orderBy: { createdAt: 'desc' },
       take: 200,
     });

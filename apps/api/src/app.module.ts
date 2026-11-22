@@ -3,7 +3,12 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ENV, Env, loadEnv } from './config/env';
+import { CatalogController } from './catalog/catalog.controller';
+import { CatalogService } from './catalog/catalog.service';
 import { ConfigController } from './config/config.controller';
+import { TrustlessWorkClient } from './trustless-work/trustless-work.client';
+import { TrustlessWorkConfig } from './trustless-work/trustless-work.config';
+import { TrustlessWorkEscrowService } from './trustless-work/trustless-work-escrow.service';
 import { AuditService } from './common/audit.service';
 import { AuthGuard } from './common/auth/auth.guard';
 import { SessionService } from './common/auth/session.service';
@@ -63,6 +68,7 @@ const env = loadEnv();
   controllers: [
     HealthController,
     ConfigController,
+    CatalogController,
     AuthController,
     MeController,
     ImportersController,
@@ -91,6 +97,10 @@ const env = loadEnv();
     OrdersQueryService,
     LogisticsService,
     EscrowService,
+    CatalogService,
+    TrustlessWorkConfig,
+    TrustlessWorkClient,
+    TrustlessWorkEscrowService,
     DisputesService,
     RampsService,
     EvidenceService,

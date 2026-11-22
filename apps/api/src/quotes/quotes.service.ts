@@ -11,7 +11,9 @@ import {
 import { ENV, Env } from '../config/env';
 import type { AuthUser } from '../common/auth/auth.types';
 import { AuditService } from '../common/audit.service';
-import { randomToken, sha256 } from '../common/crypto';
+import { encryptText, randomToken, sha256 } from '../common/crypto';
+import { QR_TOKEN_PURPOSE } from '../catalog/catalog.service';
+import { TrustlessWorkConfig } from '../trustless-work/trustless-work.config';
 import { conflict, DomainError, forbidden, notFound } from '../common/errors';
 import { PrismaService } from '../common/prisma.service';
 import { toJson } from '../common/serialize';
@@ -28,6 +30,7 @@ export class QuotesService {
     private readonly audit: AuditService,
     @Inject(ENV) private readonly env: Env,
     @Inject(ESCROW_GATEWAY) private readonly gateway: StellarEscrowGateway,
+    private readonly tw: TrustlessWorkConfig,
   ) {}
 
   private importerOf(user: AuthUser) {
@@ -57,6 +60,7 @@ export class QuotesService {
       'purchaseTerms',
       'fiatCurrency',
       'escrowMode',
+      'escrowEngine',
     ] as const)
       if (dto[k] !== undefined) (d as Record<string, unknown>)[k] = dto[k];
     if (dto.fiatPrice !== undefined) d.fiatPrice = new Prisma.Decimal(dto.fiatPrice);
@@ -81,6 +85,15 @@ export class QuotesService {
 
   async create(user: AuthUser, dto: CreateQuoteDto, cid?: string) {
     const importerId = this.importerOf(user);
+    if (dto.quoteRequestId) {
+      const r = await this.prisma.quoteRequest.findUnique({
+        where: { id: dto.quoteRequestId },
+        include: { quote: true },
+      });
+      if (!r || r.importerId !== importerId) throw notFound('Solicitud de cotización');
+      if (r.status !== 'OPEN' || r.quote)
+        throw conflict('REQUEST_NOT_OPEN', 'La solicitud ya tiene cotización o está cerrada');
+    }
     const data = this.toData(dto) as Prisma.QuoteUncheckedCreateInput;
     const q = await this.prisma.quote.create({
       data: {
@@ -91,6 +104,7 @@ export class QuotesService {
         tokenDecimals: this.env.STELLAR_TOKEN_DECIMALS,
         advanceAmountAtomic: dto.advanceAmountAtomic ? BigInt(dto.advanceAmountAtomic) : 0n,
         riskDisclosureVersion: disclosureFor(dto.escrowMode).version,
+        quoteRequestId: dto.quoteRequestId ?? null,
       },
     });
     await this.audit.record({
@@ -177,6 +191,7 @@ export class QuotesService {
       fundingDeadline: QuotesService.fundingDeadline(q).toISOString(),
       fulfillmentDeadline: q.fulfillmentDeadline.toISOString(),
       riskDisclosureVersion: q.riskDisclosureVersion,
+      ...(q.escrowEngine !== 'MONTUNO' ? { escrowEngine: q.escrowEngine } : {}),
     };
   }
 
@@ -204,6 +219,15 @@ export class QuotesService {
       throw v('MODE_NOT_ALLOWED', `Modo ${q.escrowMode} no habilitado para esta importadora`);
     if (q.escrowMode === 'FULL_ESCROW' && q.advanceAmountAtomic !== 0n)
       throw v('MODE_MISMATCH', 'FULL_ESCROW no admite anticipo');
+    if (q.escrowEngine === 'TRUSTLESS_WORK') {
+      if (!this.tw.enabled)
+        throw v('ENGINE_UNAVAILABLE', 'Trustless Work no está configurado en este servidor');
+      if (q.escrowMode !== 'FULL_ESCROW')
+        throw v(
+          'ENGINE_MODE_UNSUPPORTED',
+          'Con Trustless Work solo se admite escrow completo (FULL_ESCROW)',
+        );
+    }
     if (q.escrowMode === 'PARTIAL_ADVANCE') {
       if (q.advanceAmountAtomic <= 0n || q.advanceAmountAtomic >= q.amountAtomic)
         throw v('INVALID_ADVANCE', 'Anticipo debe ser > 0 y < total');
@@ -257,6 +281,16 @@ export class QuotesService {
       );
       return tx.quote.findUniqueOrThrow({ where: { id } });
     });
+    if (updated.quoteRequestId) {
+      // La solicitud del catálogo pasa a QUOTED y el comprador (y solo él) puede recuperar el enlace.
+      await this.prisma.quoteRequest.update({
+        where: { id: updated.quoteRequestId },
+        data: {
+          status: 'QUOTED',
+          checkoutTokenEnc: encryptText(this.env.SESSION_SECRET, QR_TOKEN_PURPOSE, token),
+        },
+      });
+    }
     return {
       quote: this.present(updated),
       checkout: {

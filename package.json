@@ -4,20 +4,22 @@
   "description": "Montuno: monorepo con la API (NestJS), los contratos Soroban y, m\u00e1s adelante, el frontend. Stellar Testnet.",
   "workspaces": [
     "packages/shared",
-    "apps/api"
+    "apps/api",
+    "apps/web"
   ],
   "engines": {
     "node": ">=22.12"
   },
   "scripts": {
-    "build": "npm run build -w packages/shared && npm run build -w apps/api",
+    "build": "npm run build -w packages/shared && npm run build -w apps/api && npm run build -w apps/web",
     "dev": "npm run build -w packages/shared && npm run start:dev -w apps/api",
-    "test": "npm run build -w packages/shared && npm test -w packages/shared && npm test -w apps/api",
+    "test": "npm run build -w packages/shared && npm test -w packages/shared && npm test -w apps/api && npm test -w apps/web",
     "test:contracts": "cd contracts && cargo test",
-    "lint": "npm run lint -w apps/api && npm run lint -w packages/shared",
+    "lint": "npm run lint -w apps/api && npm run lint -w packages/shared && npm run lint -w apps/web",
     "format": "prettier --write \"apps/api/{src,test}/**/*.ts\" \"packages/shared/src/**/*.ts\" scripts/**/*.ts",
     "db:migrate": "npm run prisma:migrate -w apps/api",
-    "e2e:testnet": "npm run build -w packages/shared && npm run e2e:testnet -w apps/api"
+    "e2e:testnet": "npm run build -w packages/shared && npm run e2e:testnet -w apps/api",
+    "dev:web": "npm run dev -w apps/web"
   },
   "devDependencies": {
     "prettier": "3.6.2"
@@ -26,5 +28,6 @@
     "prisma@6.19.3": true,
     "@prisma/engines@6.19.3": true,
     "@prisma/client@6.19.3": true
-  }
+  },
+  "license": "MIT"
 }

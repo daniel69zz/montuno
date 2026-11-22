@@ -31,6 +31,17 @@ enum EscrowMode {
   PARTIAL_ADVANCE
 }
 
+enum EscrowEngine {
+  MONTUNO // contrato escrow propio (Soroban)
+  TRUSTLESS_WORK // escrow single-release de Trustless Work (beta)
+}
+
+enum QuoteRequestStatus {
+  OPEN
+  QUOTED
+  CLOSED
+}
+
 enum QuoteStatus {
   DRAFT
   SENT
@@ -117,6 +128,7 @@ model User {
   ordersAsBuyer  Order[]            @relation("BuyerOrders")
   ownedImporters Importer[]         @relation("ImporterOwner")
   kycRecords     KycRecord[]
+  quoteRequests  QuoteRequest[]
 
   @@unique([identityProvider, externalSubject])
 }
@@ -177,11 +189,13 @@ model Importer {
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
 
-  owner   User             @relation("ImporterOwner", fields: [ownerUserId], references: [id])
-  wallet  UserWallet?      @relation(fields: [walletId], references: [id])
-  members ImporterMember[]
-  quotes  Quote[]
-  orders  Order[]
+  owner         User             @relation("ImporterOwner", fields: [ownerUserId], references: [id])
+  wallet        UserWallet?      @relation(fields: [walletId], references: [id])
+  members       ImporterMember[]
+  quotes        Quote[]
+  orders        Order[]
+  catalogItems  CatalogItem[]
+  quoteRequests QuoteRequest[]
 
   @@index([ownerUserId])
 }
@@ -202,9 +216,9 @@ model ImporterMember {
 }
 
 model Quote {
-  id                    String      @id @default(uuid()) @db.Uuid
-  importerId            String      @db.Uuid
-  createdBy             String      @db.Uuid
+  id                    String       @id @default(uuid()) @db.Uuid
+  importerId            String       @db.Uuid
+  createdBy             String       @db.Uuid
   productUrl            String
   productName           String
   productVariant        String?
@@ -212,33 +226,36 @@ model Quote {
   destinationCity       String
   deliveryEstimateDays  Int
   purchaseTerms         String
-  fiatPrice             Decimal     @db.Decimal(20, 2)
+  fiatPrice             Decimal      @db.Decimal(20, 2)
   fiatCurrency          String
   amountAtomic          BigInt // unidades atómicas EXACTAS del token que deben entrar al contrato
   tokenContractId       String
   tokenDecimals         Int
-  serviceFeeAtomic      BigInt      @default(0)
-  rampFeeAtomic         BigInt      @default(0)
-  fxRate                Decimal?    @db.Decimal(24, 10)
+  serviceFeeAtomic      BigInt       @default(0)
+  rampFeeAtomic         BigInt       @default(0)
+  fxRate                Decimal?     @db.Decimal(24, 10)
   fxSpreadBps           Int?
   fxSource              String?
   fxQuoteExpiresAt      DateTime?
   escrowMode            EscrowMode
-  advanceAmountAtomic   BigInt      @default(0)
+  escrowEngine          EscrowEngine @default(MONTUNO)
+  quoteRequestId        String?      @unique @db.Uuid
+  advanceAmountAtomic   BigInt       @default(0)
   fulfillmentDeadline   DateTime
   riskDisclosureVersion String
   termsHash             String? // se fija al publicar
   canonicalTerms        Json?
-  status                QuoteStatus @default(DRAFT)
+  status                QuoteStatus  @default(DRAFT)
   expiresAt             DateTime
-  version               Int         @default(1)
+  version               Int          @default(1)
   publishedAt           DateTime?
-  createdAt             DateTime    @default(now())
-  updatedAt             DateTime    @updatedAt
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
 
   importer      Importer       @relation(fields: [importerId], references: [id])
   checkoutLinks CheckoutLink[]
   order         Order?
+  quoteRequest  QuoteRequest?  @relation(fields: [quoteRequestId], references: [id])
 
   @@index([importerId])
   @@index([status, expiresAt])
@@ -271,6 +288,8 @@ model Order {
   onchainOrderId        String        @unique // hex 32 bytes
   termsHash             String
   escrowMode            EscrowMode
+  escrowEngine          EscrowEngine  @default(MONTUNO)
+  twContractId          String?       @unique // contrato desplegado por Trustless Work
   amountAtomic          BigInt
   advanceAmountAtomic   BigInt
   fundingDeadline       DateTime
@@ -506,4 +525,50 @@ model IndexerCheckpoint {
   lastLedger Int
   cursor     String?
   updatedAt  DateTime @updatedAt
+}
+
+/// Producto de referencia que una importadora verificada ofrece traer. NO es stock ni precio cerrado:
+/// el precio final siempre sale de una cotización.
+model CatalogItem {
+  id                   String         @id @default(uuid()) @db.Uuid
+  importerId           String         @db.Uuid
+  title                String
+  category             String
+  description          String
+  referencePriceFiat   Decimal        @db.Decimal(20, 2)
+  fiatCurrency         String
+  referenceUrl         String? // URL de la tienda de origen (validada; nunca se descarga)
+  deliveryEstimateDays Int
+  active               Boolean        @default(true)
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  importer             Importer       @relation(fields: [importerId], references: [id], onDelete: Cascade)
+  quoteRequests        QuoteRequest[]
+
+  @@index([active, category])
+  @@index([importerId])
+}
+
+/// Solicitud de cotización de un comprador a una importadora (desde el catálogo o con un enlace propio).
+model QuoteRequest {
+  id               String             @id @default(uuid()) @db.Uuid
+  importerId       String             @db.Uuid
+  buyerId          String             @db.Uuid
+  catalogItemId    String?            @db.Uuid
+  productUrl       String?
+  details          String
+  quantity         Int                @default(1)
+  destinationCity  String
+  status           QuoteRequestStatus @default(OPEN)
+  /// token del checkout cifrado (AES-256-GCM) para que solo el comprador lo recupere
+  checkoutTokenEnc String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  importer         Importer           @relation(fields: [importerId], references: [id], onDelete: Cascade)
+  buyer            User               @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  catalogItem      CatalogItem?       @relation(fields: [catalogItemId], references: [id], onDelete: SetNull)
+  quote            Quote?
+
+  @@index([importerId, status])
+  @@index([buyerId])
 }

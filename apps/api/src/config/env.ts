@@ -59,10 +59,13 @@ export const EnvSchema = z
     POLLAR_MODE: z.enum(['mock']).default('mock'),
     POLLAR_KYC_MODE: z.enum(['mock']).default('mock'),
     POLLAR_RAMP_MODE: z.enum(['mock']).default('mock'),
-    /** Llave PÚBLICA de Pollar (pk_...): la usa el navegador; no es un secreto de servidor. */
+    /** Llave PÚBLICA de Pollar (pub_testnet_... / pk_...): la usa el navegador; no es un secreto de servidor. */
     POLLAR_API_KEY: z
       .string()
-      .regex(/^pk_[A-Za-z0-9_-]+$/, 'POLLAR_API_KEY debe ser la llave pública pk_...')
+      .regex(
+        /^(pk|pub)_[A-Za-z0-9_-]+$/,
+        'POLLAR_API_KEY debe ser la llave pública de Pollar (pub_testnet_..., pk_...)',
+      )
       .or(z.literal(''))
       .default(''),
     POLLAR_BASE_URL: z.string().optional(),
@@ -81,6 +84,22 @@ export const EnvSchema = z
       .string()
       .regex(/^[1-9][0-9]{0,17}$/)
       .default('5000000000'),
+    /**
+     * Trustless Work (beta, v2 Core API en testnet): motor de escrow alternativo, solo FULL_ESCROW.
+     * Se habilita cuando están la API key y las direcciones de plataforma y admin (distintas entre sí).
+     */
+    TRUSTLESS_WORK_BASE_URL: z.string().url().default('https://beta.api.trustlesswork.com'),
+    TRUSTLESS_WORK_API_KEY: z.string().or(z.literal('')).default(''),
+    TRUSTLESS_WORK_PLATFORM_ADDRESS: z
+      .string()
+      .regex(/^G[A-Z2-7]{55}$/)
+      .or(z.literal(''))
+      .default(''),
+    TRUSTLESS_WORK_ADMIN_ADDRESS: z
+      .string()
+      .regex(/^G[A-Z2-7]{55}$/)
+      .or(z.literal(''))
+      .default(''),
     MOCK_KYC_AUTO_APPROVE: bool,
     /** Vacío = el webhook de desarrollo /webhooks/mock-ramp queda deshabilitado. */
     MOCK_WEBHOOK_SECRET: secret('MOCK_WEBHOOK_SECRET', 16).or(z.literal('')).default(''),

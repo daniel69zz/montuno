@@ -100,6 +100,7 @@ export class CheckoutService {
       },
       escrow: {
         mode: q.escrowMode,
+        engine: q.escrowEngine,
         advanceAmountAtomic: q.advanceAmountAtomic,
         advanceBps: bpsOf(q.advanceAmountAtomic, q.amountAtomic),
         protectedAmountAtomic: q.amountAtomic - q.advanceAmountAtomic,
@@ -183,6 +184,7 @@ export class CheckoutService {
           onchainOrderId: onchainOrderId(orderId),
           termsHash: q.termsHash!,
           escrowMode: q.escrowMode,
+          escrowEngine: q.escrowEngine,
           amountAtomic: q.amountAtomic,
           advanceAmountAtomic: q.advanceAmountAtomic,
           fundingDeadline: QuotesService.fundingDeadline(q),

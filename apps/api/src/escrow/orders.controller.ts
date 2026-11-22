@@ -43,8 +43,12 @@ export class OrdersController {
       where: { orderId: id },
       orderBy: { createdAt: 'asc' },
     });
+    const full = await this.prisma.order.findUniqueOrThrow({
+      where: { id },
+      include: OrdersQueryService.include,
+    });
     return {
-      ...(this.query.present(a.order, { includeWallets: true }) as object),
+      ...(this.query.present(full, { includeWallets: true }) as object),
       history: toJson(events),
       myRoles: { buyer: a.isBuyer, importer: a.isImporter, arbiter: a.isArbiter, admin: a.isAdmin },
     };

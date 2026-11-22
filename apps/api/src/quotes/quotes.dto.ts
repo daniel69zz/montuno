@@ -6,6 +6,7 @@ import {
   IsISO8601,
   IsOptional,
   IsString,
+  IsUUID,
   Matches,
   Max,
   MaxLength,
@@ -50,6 +51,17 @@ export class CreateQuoteDto {
   rampFeeAtomic?: string;
   @IsOptional() @ValidateNested() @Type(() => FxDto) fx?: FxDto;
   @IsIn(['FULL_ESCROW', 'PARTIAL_ADVANCE']) escrowMode: 'FULL_ESCROW' | 'PARTIAL_ADVANCE';
+  @ApiPropertyOptional({
+    enum: ['MONTUNO', 'TRUSTLESS_WORK'],
+    description: 'Motor de escrow. TRUSTLESS_WORK (beta) solo admite FULL_ESCROW.',
+  })
+  @IsOptional()
+  @IsIn(['MONTUNO', 'TRUSTLESS_WORK'])
+  escrowEngine?: 'MONTUNO' | 'TRUSTLESS_WORK';
+  @ApiPropertyOptional({ description: 'Solicitud de cotización (catálogo) a la que responde' })
+  @IsOptional()
+  @IsUUID()
+  quoteRequestId?: string;
   @ApiPropertyOptional({ example: '9000000000' })
   @IsOptional()
   @Matches(ATOMIC)

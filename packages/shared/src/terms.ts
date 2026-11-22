@@ -28,6 +28,8 @@ export interface CanonicalTermsV1 {
   fundingDeadline: string;
   fulfillmentDeadline: string;
   riskDisclosureVersion: string;
+  /** Solo presente si el motor no es el contrato propio (mantiene estables los hashes v1 de MONTUNO). */
+  escrowEngine?: string;
 }
 
 /** JSON canónico: claves ordenadas, sin espacios, sin undefined. */

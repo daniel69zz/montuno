@@ -4,7 +4,7 @@ Fuentes leídas el 2026-11-22: `github.com/pollar-xyz/pollar` (README y `package
 
 | Tema | Documentado | Decisión en este repo |
 |---|---|---|
-| Paquete de servidor | No. El SDK es de cliente; en Next.js "server-side, the SDK degrades to a no-op". Solo hay API key pública `pk_...`. | No se instaló `@pollar/*` en el backend. |
+| Paquete de servidor | No. El SDK es de cliente; en Next.js "server-side, the SDK degrades to a no-op". Solo hay API key pública (`pub_testnet_...`). | No se instaló `@pollar/*` en el backend. |
 | Login email OTP | `client.login({provider:'email'})` + `client.verifyEmailCode()`, con tokens DPoP en el **cliente**. | — |
 | Verificar sesión en servidor | **No documentado** (sin JWT, JWKS ni endpoint de verificación). | El backend **no acepta** la sesión de Pollar como prueba. El login con Pollar se hace firmando SEP-53 con su wallet embebida (ver abajo). |
 | Prueba de wallet | `client.stellar.sep53.signMessage(message)` y `client.stellar.sep10.sign(...)`. | Se implementa la verificación **SEP-53**, compatible por especificación y validada byte a byte contra `stellar message sign`. |
@@ -31,7 +31,7 @@ Qué **no** se hace, a propósito:
 - El correo que muestra Pollar (`getUserProfile().mail`) no se guarda como verificado, porque el servidor no puede comprobarlo. La cuenta queda identificada por la wallet.
 - `walletProvider: 'pollar'` es solo informativo y no da permisos; cualquier wallet que firme correctamente entra igual.
 
-Configuración: `POLLAR_API_KEY=pk_...` (llave **pública**, del dashboard de Pollar). Sin ella, `/config` no ofrece `pollar-email`. Está probado en `test/scenarios.e2e-spec.ts` con una keypair en el papel de la wallet embebida; **falta una prueba con una cuenta real de Pollar** (WorkVille la tiene marcada igual: "real, sin probar con cuentas reales").
+Configuración: `POLLAR_API_KEY=pub_testnet_...` (llave **pública** de la app de Pollar; algunas versiones de su doc la muestran como `pk_...`). Solo funciona desde los orígenes autorizados en Build → Domains. Sin ella, `/config` no ofrece `pollar-email`. Está probado en `test/scenarios.e2e-spec.ts` con una keypair en el papel de la wallet embebida; **falta una prueba con una cuenta real de Pollar** (WorkVille la tiene marcada igual: "real, sin probar con cuentas reales").
 
 ## Rampa BOB → USDC
 - Lo que en WorkVille funciona en Testnet es la rampa **simulada**: un QR falso y USDC de Circle real de Testnet enviado desde una wallet "caja" del servidor.

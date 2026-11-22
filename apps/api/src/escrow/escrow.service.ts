@@ -8,6 +8,7 @@ import { conflict, DomainError, forbidden, invalid, notFound } from '../common/e
 import { PrismaService } from '../common/prisma.service';
 import { toJson } from '../common/serialize';
 import { OrderAccessService } from '../orders/order-access.service';
+import { TrustlessWorkEscrowService } from '../trustless-work/trustless-work-escrow.service';
 import {
   ESCROW_GATEWAY,
   EscrowCall,
@@ -42,6 +43,7 @@ export class EscrowService {
     private readonly access: OrderAccessService,
     private readonly audit: AuditService,
     @Inject(ESCROW_GATEWAY) private readonly gateway: StellarEscrowGateway,
+    private readonly twe: TrustlessWorkEscrowService,
   ) {}
 
   private gatewayError(e: unknown): never {
@@ -133,6 +135,11 @@ export class EscrowService {
     if (!isBuyer) throw forbidden('Solo el comprador financia');
     if (!FUNDABLE.includes(order.paymentState))
       throw conflict('NOT_FUNDABLE', `Estado de pago ${order.paymentState}`);
+    if (order.escrowEngine === 'TRUSTLESS_WORK') {
+      const r = await this.twe.prepareFunding(user, order);
+      await this.setPayment(order, 'ESCROW_PENDING', user.id, `trustless work ${r.step} prepared`);
+      return r;
+    }
     const onchain = await this.chainOrder(order);
     if (onchain) {
       await this.syncFromChain(order.id, 'prepare-check');
@@ -197,6 +204,7 @@ export class EscrowService {
   async prepareAdvance(user: AuthUser, orderId: string, cid?: string) {
     const { order, isImporter } = await this.access.load(user, orderId);
     if (!isImporter) throw forbidden('Solo la importadora reclama el anticipo');
+    if (order.escrowEngine === 'TRUSTLESS_WORK') this.twe.forbidAdvance();
     if (order.escrowMode !== 'PARTIAL_ADVANCE')
       throw invalid('ADVANCE_NOT_ALLOWED', 'La orden es FULL_ESCROW');
     const onchain = await this.chainOrder(order);
@@ -225,6 +233,7 @@ export class EscrowService {
     if (!isBuyer) throw forbidden('Solo el comprador confirma la entrega');
     if (order.logisticState !== 'READY_FOR_DELIVERY' && order.logisticState !== 'DELIVERED')
       throw conflict('NOT_DELIVERED', 'La importadora aún no marcó el pedido como listo/entregado');
+    if (order.escrowEngine === 'TRUSTLESS_WORK') return this.twe.prepareDelivery(user, order);
     const onchain = await this.chainOrder(order);
     if (!onchain) throw conflict('ORDER_NOT_FUNDED', 'La orden no está financiada');
     if (onchain.status === 'DISPUTED') throw conflict('DISPUTE_ACTIVE', 'Disputa activa');
@@ -252,6 +261,8 @@ export class EscrowService {
     disputeId: string,
     reasonHashHex: string,
   ) {
+    if (order.escrowEngine === 'TRUSTLESS_WORK')
+      return this.twe.prepareOpenDispute(user, order, role, disputeId, reasonHashHex);
     const signer = role === 'BUYER' ? order.buyerWallet : order.importerWallet;
     return this.store(
       order,
@@ -271,6 +282,8 @@ export class EscrowService {
     release: bigint,
     resolutionHashHex: string,
   ) {
+    if (order.escrowEngine === 'TRUSTLESS_WORK')
+      return this.twe.prepareResolution(user, order, disputeId, refund, release);
     const onchain = await this.chainOrder(order);
     if (!onchain || onchain.status !== 'DISPUTED')
       throw conflict('NOT_DISPUTED', 'La orden no está en disputa on-chain');
@@ -328,7 +341,10 @@ export class EscrowService {
 
     let result;
     try {
-      result = await this.gateway.submit(signedXdr, p.txHash);
+      result =
+        order.escrowEngine === 'TRUSTLESS_WORK'
+          ? await this.twe.submit(p.id, signedXdr)
+          : await this.gateway.submit(signedXdr, p.txHash);
     } catch (e) {
       await this.prisma.preparedTransaction.update({
         where: { id: p.id },
@@ -351,7 +367,7 @@ export class EscrowService {
         where: { id: p.id },
         data: { status: 'FAILED', error: result.error?.slice(0, 500) },
       });
-      if (p.action === 'create_and_fund')
+      if (p.action === 'create_and_fund' || p.action === 'tw_deploy' || p.action === 'tw_fund')
         await this.setPayment(order, 'FAILED', user.id, `funding failed: ${result.error}`);
     }
     // PENDING: queda SUBMITTED; la conciliación lo resolverá sin reenviar.
@@ -439,6 +455,19 @@ export class EscrowService {
     attempt = 0,
   ): Promise<Order> {
     const order = await this.prisma.order.findUniqueOrThrow({ where: { id: orderId } });
+    if (order.escrowEngine === 'TRUSTLESS_WORK') {
+      if (ctx)
+        await this.recordTx(
+          order.id,
+          ctx.txHash,
+          ctx.action,
+          null,
+          ctx.ledger,
+          source,
+          order.network,
+        );
+      return this.twe.sync(orderId);
+    }
     const c = await this.gateway.getOrder(order.onchainOrderId);
     if (!c) return order;
     const diffs = this.termsMatch(order, c);
@@ -611,6 +640,23 @@ export class EscrowService {
 
   async view(user: AuthUser, orderId: string) {
     const { order } = await this.access.load(user, orderId);
+    if (order.escrowEngine === 'TRUSTLESS_WORK') {
+      const txs = await this.prisma.escrowTransaction.findMany({
+        where: { orderId: order.id },
+        orderBy: { createdAt: 'asc' },
+      });
+      return {
+        ...((await this.twe.view(order)) as object),
+        projection: toJson({
+          paymentState: order.paymentState,
+          onchainStatus: order.onchainStatus,
+          remainingEscrowAtomic: order.remainingEscrowAtomic,
+        }),
+        transactions: toJson(
+          txs.map((t) => ({ ...t, explorerUrl: this.gateway.explorerTxUrl(t.txHash) })),
+        ),
+      };
+    }
     const onchain = await this.chainOrder(order);
     const txs = await this.prisma.escrowTransaction.findMany({
       where: { orderId: order.id },

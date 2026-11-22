@@ -1,10 +1,10 @@
 # Montuno
 
-Montuno permite que las importadoras pequeñas de Bolivia, que venden por WhatsApp y bajo pedido, cobren por adelantado **sin que el comprador tenga que confiar a ciegas**. La importadora manda un **enlace de checkout privado** y el pago queda en un **contrato inteligente (escrow) en Stellar** hasta que el pedido llega. No es un marketplace: la conversación y la venta siguen en WhatsApp.
+Montuno permite que las importadoras pequeñas de Bolivia, que venden por WhatsApp y bajo pedido, cobren por adelantado **sin que el comprador tenga que confiar a ciegas**. La importadora manda un **enlace de checkout privado** y el pago queda en un **contrato inteligente (escrow) en Stellar** hasta que el pedido llega. La conversación y la venta siguen en WhatsApp; el catálogo solo muestra productos de referencia de importadoras verificadas para que el comprador pida una cotización.
 
 ¿Qué problema resuelve, quién participa y por qué usa blockchain? Explicado sin tecnicismos en **[PROYECTO.md](PROYECTO.md)**.
 
-Este es el monorepo del proyecto. Hoy contiene la **API** y los **contratos inteligentes**; el frontend se agregará aquí mismo (en `apps/web`).
+Este es el monorepo del proyecto: la **web** (`apps/web`), la **API** (`apps/api`) y los **contratos inteligentes** (`contracts/`).
 
 ## Cómo funciona
 
@@ -39,18 +39,19 @@ Es un **MVP funcional en Stellar Testnet**, la red de pruebas, donde el dinero n
 |---|---|
 | Contrato escrow, firmas de usuarios y USDC de Testnet | ✅ Real (Testnet) |
 | API (cotizaciones, checkout, pedidos, disputas, evidencias) | ✅ Implementada y probada |
+| Web (`apps/web`): checkout, pedido con escrow paso a paso, catálogo, panel de importadora con asistente, administración | ✅ Implementada; conectada a la API real (sin datos simulados en la UI) |
+| Catálogo de referencia, proveedores y solicitudes de cotización | ✅ Implementado y probado |
+| Motor de escrow **Trustless Work** (alternativo, solo escrow completo) | 🟠 Beta: probado contra un servidor que imita su API v2; falta probarlo con una API key real |
 | Login con firma de wallet (SEP-53) | ✅ Real |
 | Login con correo vía Pollar (Pollar crea una wallet embebida que firma el desafío) | 🟠 Soportado por la API, sin probar con una cuenta real de Pollar |
 | Rampa BOB → USDC | 🟡 El pago en bolivianos es **simulado**; con `RAMP_PROVIDER=caja-testnet`, la entrega de USDC de Testnet es real |
 | KYC y OTP por correo | 🟡 Simulados (marcados `simulated: true`) |
-| Frontend (`apps/web`) | ⏳ Pendiente |
 
 **Antes de usarlo con dinero real hace falta:**
 - una auditoría externa del contrato;
 - revisión legal y regulatoria en Bolivia;
 - un árbitro multisig en lugar de uno solo;
-- una rampa real BOB → USDC hacia Stellar;
-- la interfaz de usuario.
+- una rampa real BOB → USDC hacia Stellar.
 
 Próximos pasos y detalle en [PROYECTO.md](PROYECTO.md#próximos-pasos). Evidencia de pruebas y pendientes técnicos en **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)**.
 
@@ -75,10 +76,14 @@ En `apps/api/.env`, reemplaza `SESSION_SECRET` y `MOCK_WEBHOOK_SECRET` por valor
 ```bash
 npm run db:migrate                 # prisma migrate deploy
 npm run dev                        # API en http://localhost:3000 con recarga automática
+npm run dev:web                    # en otra terminal: web en http://localhost:5173 (usa la API por proxy)
+node scripts/demo/seed-demo.mjs    # opcional: importadora, productos y dos cotizaciones de DEMO
 ```
 
+- La web: http://localhost:5173. El script de demo imprime dos enlaces de checkout y una clave de **wallet de prueba** (sin valor) para entrar como la importadora.
 - Swagger en http://localhost:3000/docs (el JSON está en `/docs/openapi.json`).
 - Salud en `/health` y `/ready`.
+- Pollar solo funciona en `http://localhost:5173` o HTTPS, y ese origen tiene que estar autorizado en el panel de Pollar.
 
 ### Variables que cambian el comportamiento
 
@@ -87,7 +92,8 @@ npm run dev                        # API en http://localhost:3000 con recarga au
 | `ESCROW_GATEWAY` | `simulated` (defecto) · `soroban` | Ledger en memoria, o el contrato real en Testnet. Con `soroban` hacen falta `STELLAR_ESCROW_CONTRACT_ID`, `STELLAR_ESCROW_TOKEN_CONTRACT_ID` y `STELLAR_ARBITER_ADDRESS` |
 | `RAMP_PROVIDER` | `mock` (defecto) · `caja-testnet` | Rampa que no mueve tokens, o una caja del servidor que entrega USDC de Testnet real. `caja-testnet` exige `ESCROW_GATEWAY=soroban` y `RAMP_CAJA_SECRET` |
 | `RAMP_CAJA_SECRET` | clave `S…` | Única clave del servidor. Solo firma transferencias desde la caja; queda prohibida en producción |
-| `POLLAR_API_KEY` | `pk_…` | Llave **pública** de Pollar. Si está, `GET /api/v1/config` ofrece el login con correo |
+| `POLLAR_API_KEY` | `pub_testnet_…` | Llave **pública** de Pollar. Si está, `GET /api/v1/config` ofrece el login con correo |
+| `TRUSTLESS_WORK_API_KEY`, `TRUSTLESS_WORK_PLATFORM_ADDRESS`, `TRUSTLESS_WORK_ADMIN_ADDRESS` | llave y dos cuentas `G…` distintas | Habilitan el motor Trustless Work (beta). Sin ellas, solo se usa el contrato de Montuno |
 
 La lista completa está comentada en [`.env.example`](.env.example).
 
@@ -96,7 +102,7 @@ La lista completa está comentada en [`.env.example`](.env.example).
 ## Pruebas
 
 ```bash
-npm test                 # shared + API: unitarios y escenarios E2E contra Postgres (BD montuno_test)
+npm test                 # shared + API (unitarios y escenarios E2E contra Postgres, BD montuno_test) + web
 npm run test:contracts   # cargo test del contrato
 npm run lint             # chequeo de tipos
 ```
@@ -122,6 +128,7 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/montuno?schema=public
 
 El flujo completo, paso a paso:
 
+0. **Catálogo, opcional.** `GET /catalog` y `GET /providers` son públicos. El comprador pide una cotización con `POST /quote-requests`; la importadora la ve en `GET /importers/me/quote-requests` y responde con una cotización que lleva `quoteRequestId`. Al publicarla, el comprador recupera su enlace en `GET /me/quote-requests`.
 1. **Sesión.** Firma SEP-53 de un desafío con la wallet (Freighter, la CLI o la wallet embebida de Pollar), o un OTP simulado en desarrollo. `GET /config` le dice a la UI qué métodos hay.
 2. **Wallet del usuario.** `POST /me/wallets/challenge` + `POST /me/wallets/verify` (prueba de posesión).
 3. **Alta de la importadora.** `POST /importers`. El admin la aprueba (`verify`) y le fija límites (`limits`); el anticipo está deshabilitado por defecto. La importadora vincula su wallet de cobro.
@@ -140,6 +147,7 @@ Ejemplos de cada paso en [`docs/http/requests.http`](docs/http/requests.http). F
 ## Estructura
 
 ```text
+apps/web/                  web React 19 + Vite 8 (sistema de diseño propio, sin librerías de UI)
 apps/api/                  API NestJS 11 + Prisma 6 (PostgreSQL)
   prisma/                  esquema y migraciones
   src/                     módulos de dominio (ver docs/architecture.md)
@@ -148,14 +156,14 @@ apps/api/                  API NestJS 11 + Prisma 6 (PostgreSQL)
 contracts/import_escrow/   contrato Rust/Soroban (soroban-sdk 29.0.1) y sus tests
 packages/shared/           enums, máquinas de estado, dinero en bigint, hash de términos
 scripts/testnet/           deploy.sh y smoke.sh (CLI de Stellar)
+scripts/demo/              seed-demo.mjs: datos de DEMO cargados a través de la API
 docs/                      arquitectura, estados, contrato, firma, Pollar, seguridad, ejemplos HTTP, despliegues
 guia.md                    especificación original del MVP
-(apps/web/)                frontend: pendiente
 ```
 
 ## Documentación
 
-[De qué trata el proyecto](PROYECTO.md) · [Arquitectura](docs/architecture.md) · [Máquinas de estado](docs/state-machines.md) · [Contrato](docs/contract.md) · [Flujo de firma](docs/signing-flow.md) · [Pollar](docs/pollar-integration.md) · [Seguridad y riesgo](docs/security-and-risk.md)
+[De qué trata el proyecto](PROYECTO.md) · [Web](docs/frontend.md) · [Arquitectura](docs/architecture.md) · [Máquinas de estado](docs/state-machines.md) · [Contrato](docs/contract.md) · [Flujo de firma](docs/signing-flow.md) · [Pollar](docs/pollar-integration.md) · [Seguridad y riesgo](docs/security-and-risk.md) · [Recorrido para jueces](docs/demo-jueces.md) · [Validación con usuarios](docs/validacion.md) · [Mercado](docs/mercado.md) · [Pitch](docs/pitch.md)
 
 ## Nombres heredados
 
@@ -164,6 +172,14 @@ Montuno empezó con el nombre técnico `import-escrow`, y dos nombres se conserv
 - **El crate del contrato, `import_escrow`:** renombrarlo cambiaría el hash del WASM desplegado.
 - **Los prefijos de los hashes de dominio** (`import-escrow/terms/v1`, `import-escrow/order/v1`, …): son constantes versionadas del protocolo y de ellos se derivan el `termsHash` y el `order_id` on-chain. Cambiarán solo con una nueva versión de esquema.
 
+## Equipo
+
+| Integrante | Rol | Qué construyó |
+|---|---|---|
+| Luis Daniel Rojas Caceres (GitHub [daniel69zz](https://github.com/daniel69zz)) | Backend y contratos | [completar] |
+| Oziel Rodman Ramos Torrez | Full stack | [completar] |
+| Daniel Boris Rueda | Backend | [completar] |
+
 ## Licencia
 
-Todavía no tiene licencia. Hasta que la tenga, no se concede permiso para reutilizar el código.
+[MIT](LICENSE) © 2026 Luis Daniel Rojas Caceres, Oziel Rodman Ramos Torrez y Daniel Boris Rueda.

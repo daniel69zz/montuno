@@ -1,14 +1,62 @@
+# ---------------------------------------------------------------------------
+# Montuno — monorepo (npm workspaces: apps/api, apps/web, packages/shared)
+# ---------------------------------------------------------------------------
+
+# Dependencias
 node_modules/
+.pnpm-store/
+
+# Builds y cachés
 dist/
-coverage/
+build/
+*.tsbuildinfo
+.vite/
+.cache/
+.turbo/
+apps/api/src/generated/
+
+# Variables de entorno y secretos (nunca al repo)
 .env
 .env.*
 !.env.example
+*.local
+*.pem
+*.key
+*.p12
+secrets/
+# Claves de Stellar: viven en el keystore de la CLI (~/.config/stellar), no aquí
+.seed-keys.json
+
+# Almacenamiento local de evidencias (archivos privados de usuarios; OBJECT_STORAGE_LOCAL_DIR=./storage)
+/apps/api/storage/
+
+# Contratos Soroban (Rust)
 contracts/target/
-apps/api/storage/
-apps/api/src/generated/
-*.log
-!docs/deployments/*.log
-.DS_Store
 # snapshots que genera soroban-sdk testutils en cada cargo test
 contracts/**/test_snapshots/
+
+# Tests y cobertura
+coverage/
+test-results/
+playwright-report/
+.nyc_output/
+
+# Logs (los de docs/deployments son evidencia de Testnet y SÍ se versionan)
+*.log
+npm-debug.log*
+!docs/deployments/*.log
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+
+# Configuración local de herramientas de IA
+.claude/settings.local.json
+
+# Notas y briefs sueltos en .txt: la documentación vive en README.md y docs/*.md
+*.txt
