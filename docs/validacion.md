@@ -1,6 +1,6 @@
 # Validación con usuarios
 
-> **Estado: pendiente.** Esta es la guía para hacer las entrevistas. Todavía no hay respuestas registradas, y la tabla y el resumen están vacíos a propósito: solo se llenan con respuestas reales.
+> **Estado: entrevistas exploratorias realizadas.** El equipo reporta conversaciones en La Paz y El Alto, con una recepción general positiva de la propuesta. Falta sistematizar el número de participantes, fechas, perfiles, respuestas por pregunta y citas textuales; por eso no se presentan porcentajes ni cifras de mercado.
 
 ## Objetivo
 
@@ -13,6 +13,8 @@ Comprobar con personas reales tres supuestos de Montuno:
 **Meta:** entrevistar a 5–10 importadoras y a 5–10 compradores en La Paz, El Alto, Cochabamba o Santa Cruz.
 
 ## Cómo conseguir las entrevistas
+
+La primera ronda se realizó en **La Paz y El Alto**. Para ampliar la muestra, se recomienda continuar en Cochabamba y Santa Cruz, que forman parte del enfoque geográfico inicial del proyecto.
 
 - **Importadoras:** páginas y grupos de Facebook o Instagram de "importaciones bajo pedido", catálogos de WhatsApp, contactos personales.
 - **Compradores:** conocidos que hayan comprado por importadora y comentarios en publicaciones de esas páginas.
@@ -60,7 +62,9 @@ Comprobar con personas reales tres supuestos de Montuno:
 - Copia textual de la frase más relevante en "Cita".
 - Si una pregunta no se respondió, deja la celda vacía. No completes con supuestos.
 
-## Resultados: importadoras
+## Registro detallado: importadoras
+
+La valoración positiva que reportó el equipo es cualitativa y general. No se asignan respuestas a personas concretas mientras no se hayan registrado las notas de cada entrevista.
 
 | Código | Ciudad | Fecha | Pedidos/mes (I1) | Ticket (I2) | % adelantado (I3) | Pierde clientes (I4) | Necesita anticipo (I5) | Acepta escrow / anticipo (I6) | Pagaría (I7) | Wallet/USDC (I8) | Cita |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -70,7 +74,7 @@ Comprobar con personas reales tres supuestos de Montuno:
 | I-04 | | | | | | | | | | | |
 | I-05 | | | | | | | | | | | |
 
-## Resultados: compradores
+## Registro detallado: compradores
 
 | Código | Ciudad | Fecha | Qué compró / monto (C1) | % adelantado (C2) | Problema (C3) | Recuperó dinero (C4) | Dejó de comprar (C5) | Elegiría pago protegido (C6) | Acepta anticipo (C7) | Acceso preferido (C8) | Cita |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -80,16 +84,18 @@ Comprobar con personas reales tres supuestos de Montuno:
 | C-04 | | | | | | | | | | | |
 | C-05 | | | | | | | | | | | |
 
-## Resumen
+## Resumen de la primera ronda
 
-Completar solo con los datos de las tablas.
+- **Ciudades:** La Paz y El Alto.
+- **Resultado general:** el equipo reporta que las conversaciones fueron bien y que la recepción de la propuesta fue positiva.
+- **Lectura actual:** hay una señal cualitativa inicial para seguir explorando el problema y probar la propuesta con más personas.
+- **Pendiente de sistematizar:** cantidad de importadoras y compradores, fechas, perfil de participantes, respuestas por pregunta, citas autorizadas y cualquier objeción recurrente.
 
-- Importadoras entrevistadas: [completar] · compradores entrevistados: [completar].
-- [n] de [N] importadoras cobran el 100 % por adelantado.
-- [n] de [N] importadoras dicen haber perdido clientes por desconfianza.
-- [n] de [N] importadoras necesitan parte del pago antes de comprar (anticipo).
-- [n] de [N] importadoras aceptarían el pago retenido; comisión aceptable: [completar].
-- [n] de [N] compradores pagaron el 100 % por adelantado.
-- [n] de [N] compradores tuvieron algún problema; [n] no recuperaron su dinero.
-- [n] de [N] compradores elegirían una importadora con pago protegido.
-- Conclusión: [completar, con lo que las entrevistas confirmaron o contradijeron].
+La valoración positiva no permite todavía calcular porcentajes, disposición a pagar ni tamaño de mercado. Cuando se consoliden las notas, completar las tablas con respuestas reales y actualizar el resumen con numeradores y denominadores.
+
+### Próximos pasos
+
+1. Recuperar las notas de las entrevistas de La Paz y El Alto y registrarlas con códigos anónimos.
+2. Separar las respuestas de importadoras y compradores y completar las tablas sin atribuir opiniones no registradas.
+3. Hacer una segunda ronda en Cochabamba y Santa Cruz para ampliar la cobertura geográfica.
+4. Probar disposición a pagar con una pregunta concreta de precio o comisión, en lugar de tomar una respuesta hipotética como compromiso.

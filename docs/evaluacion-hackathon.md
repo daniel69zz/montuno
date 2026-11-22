@@ -4,7 +4,7 @@
 
 Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
-> **Resumen:** Montuno ya resuelve la crítica más pesada, que el escrow no esté probado. El contrato Soroban propio se ejecutó en Testnet de punta a punta, con firmas reales y hashes publicados. Lo débil es lo mismo que en el otro proyecto: **no hay validación con usuarios, ni tamaño de mercado, ni video, ni pitch deck, ni sección de equipo, y el historial de commits es corto y de un solo autor.**
+> **Resumen:** Montuno ya resuelve la crítica más pesada, que el escrow no esté probado. El contrato Soroban propio se ejecutó en Testnet de punta a punta, con firmas reales y hashes publicados. El equipo reporta entrevistas exploratorias con recepción positiva en La Paz y El Alto, pero falta sistematizar respuestas y métricas. También faltan tamaño de mercado, video y pitch deck.
 
 ---
 
@@ -13,7 +13,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 | # | Recomendación | Montuno | Evidencia o qué falta |
 |---|---|---|---|
 | 1 | Ejecutar el escrow de punta a punta en Testnet y publicar la evidencia | ✅ | Contrato propio `CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR`, con el USDC de Circle de Testnet (`CBIELTK6…DAMA`). La prueba de punta a punta por la API (`docs/deployments/testnet-api-e2e.json`, 2026-11-22T14:09Z) tiene 12 transacciones con firmas reales: FULL (`d4d0134d…` fund, `0a2ac6ea…` release), PARTIAL (`0cad6a7e…` fund, `b47fdc01…` anticipo, `a9801a1d…` release) y una disputa resuelta por el árbitro (`fd4d69d3…` abre, `7911055e…` resuelve). Además, un smoke test por CLI con 9 pasos (`testnet-smoke.json`). La evidencia está enlazada desde el README. |
-| 2 | Validar el problema con usuarios y proveedores reales | ❌ | No hay entrevistas, cifras ni cartas de intención en el repo. Falta crear `docs/validacion.md` (ver el plan al final). |
+| 2 | Validar el problema con usuarios y proveedores reales | 🟡 | El equipo reporta entrevistas exploratorias con recepción positiva en La Paz y El Alto. `docs/validacion.md` aún no contiene cantidad de participantes ni respuestas individuales que permitan revisar la evidencia. |
 | 3 | Demo verificable sin JavaScript, video y cuenta de prueba | 🟡 | Hay una guía reproducible (`README.md` → Testnet; `scripts/testnet/*.sh`) y una colección HTTP (`docs/http/requests.http`). Pero el frontend (`apps/web`) **está en construcción** y no hay video, ni landing estática, ni credenciales de prueba para jueces. |
 | 4 | Etapa honesta y nombre único | 🟡 | El nombre está unificado: "Montuno" en el repo (`daniel69zz/montuno`) y el README. Los nombres técnicos heredados (`import_escrow`, prefijos `import-escrow/*/v1`) están explicados en el README. La etapa es "MVP funcional en Stellar Testnet", así que el formulario debe declarar **MVP en Testnet**, no "producto en vivo". El formulario no se puede revisar desde el repo. |
 | 5 | Mostrar el aporte de cada integrante | ❌ | No hay sección "Equipo" en el README. `git log` muestra 3 commits, todos de Luis Daniel (`bed1802`, `36fc8ac`, `b356ce8`, del 22-11-2026). |
@@ -23,7 +23,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 | Criterio (peso) | Nota del otro proyecto | Montuno | Por qué |
 |---|---|---|---|
-| Problema y usuario (30%) | 4/10 | 🟡 | El problema está descrito en el README: pagar el 100% por adelantado a importadoras de WhatsApp. **Pero no hay ninguna validación ni cifra de mercado**, la misma debilidad que en Moontuno. |
+| Problema y usuario (30%) | 4/10 | 🟡 | El problema está descrito en el README y hay una señal cualitativa inicial de entrevistas reportadas en La Paz y El Alto. **Faltan notas sistematizadas y cifras de mercado**, la misma debilidad que en Moontuno. |
 | Producto funcionando (25%) | 6/10 | 🟡 a ✅ | El backend y el contrato están probados: 35 tests del contrato, 45 de la API y E2E en Testnet. Falta la interfaz (en construcción) y el video. |
 | Uso de Stellar (25%) | 5,5/10 | ✅ | Tiene **contrato Soroban propio** desplegado e inmutable, con hash de WASM publicado (`d369daf5…`). Usa USDC de Circle de Testnet, login SEP-53 verificado byte a byte contra `stellar message sign`, ID del contrato y hashes publicados, y un indexador de eventos sobre el RPC real. Trustless Work se está agregando como motor alternativo beta, que es un extra y no el núcleo. |
 | Equipo y compromiso (20%) | 5/10 | ❌ | No hay sección de equipo y el historial es muy corto: 3 commits grandes de un solo autor, el mismo patrón de "importado en bloque" que se le criticó al otro proyecto. |
@@ -44,7 +44,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 |---|---|---|
 | Pitch deck | ❌ | No existe. |
 | Video de la demo | ❌ | No existe. |
-| Evidencia de validación (entrevistas, cartas, métricas) | ❌ | No existe. |
+| Evidencia de validación (entrevistas, cartas, métricas) | 🟡 | Hay un resumen cualitativo reportado por el equipo; faltan cantidad de participantes, notas anonimizadas y métricas. |
 | IDs de contrato y hashes de escrow en Testnet | ✅ | `docs/deployments/testnet.json`, `testnet-api-e2e.json` y `testnet-smoke.json`, enlazados desde el README. |
 | Estimación numérica del mercado | ❌ | No existe. |
 | Rol y aporte de cada integrante | ❌ | No hay sección "Equipo". |
@@ -64,7 +64,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 | Prioridad | Acción | Esfuerzo | Mueve |
 |---|---|---|---|
-| 1 | **Validación (`docs/validacion.md`):** entrevistar por WhatsApp a 5–10 importadoras que venden bajo pedido y a 5–10 compradores. Anotar respuestas reales; no completar con supuestos. | Medio | Problema y usuario (30%) |
+| 1 | **Validación (`docs/validacion.md`):** sistematizar las entrevistas exploratorias ya realizadas en La Paz y El Alto, y ampliar la muestra a 5–10 importadoras y 5–10 compradores. Registrar respuestas reales; no completar con supuestos. | Medio | Problema y usuario (30%) |
 | 2 | **Video de 2–3 min:** cotización → checkout → depósito al escrow → anticipo → entrega → liberación, con la transacción abierta en stellar.expert. Mostrar también una disputa. | Bajo | Producto y Stellar |
 | 3 | **Terminar el frontend** (en construcción) y agregar al README un **recorrido para jueces de menos de 2 minutos**: URL de la demo, modo DEMO y la wallet de prueba. | Medio | Producto funcionando |
 | 4 | **Sección "Equipo"** en el README (rol y módulos de cada uno), y commits o PRs pequeños desde la cuenta de cada integrante. | Bajo | Equipo (20%) |
@@ -105,7 +105,7 @@ Formato del resumen: "X de Y importadoras cobran el 100% adelantado", "X de Y co
 
 | Acción del plan | Archivo | Qué contiene |
 |---|---|---|
-| 1 · Validación | [`docs/validacion.md`](validacion.md) | Mensajes de WhatsApp para pedir entrevistas, preguntas para importadoras (I1–I9) y compradores (C1–C8), tablas de resultados **vacías** y resumen con `[completar]` |
+| 1 · Validación | [`docs/validacion.md`](validacion.md) | Guía de entrevistas, preguntas para importadoras (I1–I9) y compradores (C1–C8), resumen cualitativo de la primera ronda en La Paz y El Alto, y tablas pendientes de sistematizar |
 | 2 · Video | [`docs/demo-jueces.md`](demo-jueces.md) | Guion de 2–3 minutos con escenas, qué mostrar y qué decir, basado en las transacciones reales |
 | 3 · Demo verificable | [`docs/demo-jueces.md`](demo-jueces.md) | Recorrido de menos de 2 minutos con enlaces a stellar.expert (contrato, 12 transacciones del E2E por API y 9 del smoke por CLI), verificación en 3 clics y comandos local/Testnet |
 | 4 · Equipo | `README.md` → "Equipo" | Tabla con tu fila (Luis Daniel Rojas Caceres, daniel69zz) y placeholders de rol y aporte |
@@ -118,7 +118,7 @@ El README enlaza los cuatro documentos nuevos en "Documentación".
 
 | Pendiente | Por qué no lo puede hacer un agente |
 |---|---|
-| Hacer las entrevistas y llenar `docs/validacion.md` | Requiere hablar con personas reales |
+| Sistematizar las entrevistas ya realizadas y ampliar la muestra | Requiere recuperar notas y seguir hablando con personas reales |
 | Conseguir las cifras de `docs/mercado.md` | Requiere consultar las fuentes y citar datos verificables |
 | Grabar el video y armar el deck | Requiere grabar pantalla y voz y diseñar las láminas |
 | Completar la sección "Equipo" (roles, otros integrantes) | Solo tú sabes quién participa y qué hizo |
