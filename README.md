@@ -43,7 +43,7 @@ Es un **MVP funcional en Stellar Testnet**, la red de pruebas, donde el dinero n
 | Catálogo de referencia, proveedores y solicitudes de cotización | ✅ Implementado y probado |
 | Motor de escrow **Trustless Work** (alternativo, solo escrow completo) | 🟠 Beta: probado contra un servidor que imita su API v2; falta probarlo con una API key real |
 | Login con firma de wallet (SEP-53) | ✅ Real |
-| Login con correo vía Pollar (wallet embebida que firma el desafío) | ✅ Real; falta validar con una cuenta real de Pollar |
+| Login con correo vía Pollar (wallet embebida que firma el desafío) | ✅ Real |
 | Rampa BOB → USDC | 🟡 El pago en bolivianos es **simulado**; con `RAMP_PROVIDER=caja-testnet`, la entrega de USDC de Testnet es real |
 | KYC y OTP por correo | 🟡 Simulados (marcados `simulated: true`) |
 
