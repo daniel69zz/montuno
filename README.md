@@ -1,7 +1,5 @@
 # Montuno
 
-> ⚠️ **MVP en Stellar Testnet.** El contrato no está auditado. No lo uses con dinero real ni en Mainnet.
-
 Montuno permite que las importadoras pequeñas de Bolivia, que venden por WhatsApp y bajo pedido, cobren por adelantado **sin que el comprador tenga que confiar a ciegas**. La importadora manda un **enlace de checkout privado** y el pago queda en un **contrato inteligente (escrow) en Stellar** hasta que el pedido llega. No es un marketplace: la conversación y la venta siguen en WhatsApp.
 
 ¿Qué problema resuelve, quién participa y por qué usa blockchain? Explicado sin tecnicismos en **[PROYECTO.md](PROYECTO.md)**.
