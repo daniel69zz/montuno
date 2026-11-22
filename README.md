@@ -4,6 +4,8 @@ Montuno permite que las importadoras pequeñas de Bolivia, que venden por WhatsA
 
 El problema, los participantes y el uso de blockchain se explican en la sección «Cómo funciona» y en la documentación enlazada abajo.
 
+**Enfoque geográfico:** comenzaremos en La Paz, Cochabamba y Santa Cruz. A futuro planeamos expandirnos a más países de Latinoamérica.
+
 Este es el monorepo del proyecto: la **web** (`apps/web`), la **API** (`apps/api`) y los **contratos inteligentes** (`contracts/`).
 
 ## Cómo funciona
