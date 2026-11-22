@@ -64,7 +64,16 @@ La primera ronda se realizó en **La Paz y El Alto**. Para ampliar la muestra, s
 
 ## Registro detallado: importadoras
 
-La valoración positiva que reportó el equipo es cualitativa y general. No se asignan respuestas a personas concretas mientras no se hayan registrado las notas de cada entrevista.
+### Resultado de la primera ronda
+
+| Señal | Resultado |
+|---|---|
+| Entrevistas exploratorias en La Paz y El Alto | ✅ Realizadas: 10 personas en total |
+| Recepción general de la propuesta | ✅ Positiva, según el equipo |
+| Evaluación de la ronda | ✅ Las conversaciones salieron bien |
+| Próximo paso | ✅ Ampliar la validación y sistematizar respuestas |
+
+Esta es una síntesis agregada del reporte del equipo. No asigna respuestas concretas a importadoras o compradores; las tablas siguientes se completarán cuando se sistematicen las notas individuales.
 
 | Código | Ciudad | Fecha | Pedidos/mes (I1) | Ticket (I2) | % adelantado (I3) | Pierde clientes (I4) | Necesita anticipo (I5) | Acepta escrow / anticipo (I6) | Pagaría (I7) | Wallet/USDC (I8) | Cita |
 |---|---|---|---|---|---|---|---|---|---|---|---|
