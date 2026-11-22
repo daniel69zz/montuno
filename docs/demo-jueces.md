@@ -80,7 +80,7 @@ No hay una cuenta compartida para jueces: los scripts crean cuentas de prueba nu
 | Tiempo | Escena | Qué se muestra | Qué se dice |
 |---|---|---|---|
 | 0:00–0:20 | Problema | Un chat de WhatsApp con una cotización y "págame el 100% por adelantado" | "En Bolivia se compra afuera por importadoras de WhatsApp y se paga todo antes de recibir nada." |
-| 0:20–0:40 | Solución | `PROYECTO.md` o la portada: enlace de checkout → escrow → confirmación | "Montuno pone el pago en un contrato en Stellar hasta que el pedido llega." |
+| 0:20–0:40 | Solución | README o la portada: enlace de checkout → escrow → confirmación | "Montuno pone el pago en un contrato en Stellar hasta que el pedido llega." |
 | 0:40–1:20 | Pago protegido real | Terminal con `npm run e2e:testnet` (o el smoke test) avanzando; luego el contrato en stellar.expert | "Esto corre en Testnet: el comprador deposita 12 USDC y el contrato los retiene." |
 | 1:20–1:50 | Anticipo y liberación | Las transacciones `claim_advance` y `confirm_delivery_and_release` en el explorador | "En modo parcial la importadora cobra un anticipo para comprar; el saldo se libera cuando el comprador confirma." |
 | 1:50–2:20 | Disputa | `open_dispute` y `resolve_dispute` en el explorador | "Si algo sale mal, el árbitro reparte solo lo que sigue retenido. El anticipo pagado no vuelve, y se le avisa al comprador antes de pagar." |

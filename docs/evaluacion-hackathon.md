@@ -12,10 +12,10 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 | # | Recomendación | Montuno | Evidencia o qué falta |
 |---|---|---|---|
-| 1 | Ejecutar el escrow de punta a punta en Testnet y publicar la evidencia | ✅ | Contrato propio `CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR`, con el USDC de Circle de Testnet (`CBIELTK6…DAMA`). La prueba de punta a punta por la API (`docs/deployments/testnet-api-e2e.json`, 2026-11-22T14:09Z) tiene 12 transacciones con firmas reales: FULL (`d4d0134d…` fund, `0a2ac6ea…` release), PARTIAL (`0cad6a7e…` fund, `b47fdc01…` anticipo, `a9801a1d…` release) y una disputa resuelta por el árbitro (`fd4d69d3…` abre, `7911055e…` resuelve). Además, un smoke test por CLI con 9 pasos (`testnet-smoke.json`). README e `IMPLEMENTATION_STATUS.md` enlazan todo a stellar.expert. |
+| 1 | Ejecutar el escrow de punta a punta en Testnet y publicar la evidencia | ✅ | Contrato propio `CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR`, con el USDC de Circle de Testnet (`CBIELTK6…DAMA`). La prueba de punta a punta por la API (`docs/deployments/testnet-api-e2e.json`, 2026-11-22T14:09Z) tiene 12 transacciones con firmas reales: FULL (`d4d0134d…` fund, `0a2ac6ea…` release), PARTIAL (`0cad6a7e…` fund, `b47fdc01…` anticipo, `a9801a1d…` release) y una disputa resuelta por el árbitro (`fd4d69d3…` abre, `7911055e…` resuelve). Además, un smoke test por CLI con 9 pasos (`testnet-smoke.json`). La evidencia está enlazada desde el README. |
 | 2 | Validar el problema con usuarios y proveedores reales | ❌ | No hay entrevistas, cifras ni cartas de intención en el repo. Falta crear `docs/validacion.md` (ver el plan al final). |
 | 3 | Demo verificable sin JavaScript, video y cuenta de prueba | 🟡 | Hay una guía reproducible (`README.md` → Testnet; `scripts/testnet/*.sh`) y una colección HTTP (`docs/http/requests.http`). Pero el frontend (`apps/web`) **está en construcción** y no hay video, ni landing estática, ni credenciales de prueba para jueces. |
-| 4 | Etapa honesta y nombre único | 🟡 | El nombre está unificado: "Montuno" en el repo (`daniel69zz/montuno`), el README y `PROYECTO.md`. Los nombres técnicos heredados (`import_escrow`, prefijos `import-escrow/*/v1`) están explicados en el README. La etapa en el README es "MVP funcional en Stellar Testnet", así que el formulario debe declarar **MVP en Testnet**, no "producto en vivo". El formulario no se puede revisar desde el repo. |
+| 4 | Etapa honesta y nombre único | 🟡 | El nombre está unificado: "Montuno" en el repo (`daniel69zz/montuno`) y el README. Los nombres técnicos heredados (`import_escrow`, prefijos `import-escrow/*/v1`) están explicados en el README. La etapa es "MVP funcional en Stellar Testnet", así que el formulario debe declarar **MVP en Testnet**, no "producto en vivo". El formulario no se puede revisar desde el repo. |
 | 5 | Mostrar el aporte de cada integrante | ❌ | No hay sección "Equipo" en el README. `git log` muestra 3 commits, todos de Luis Daniel (`bed1802`, `36fc8ac`, `b356ce8`, del 22-11-2026). |
 | 6 | Ponerle un número al mercado inicial | ❌ | No hay ninguna estimación de mercado en el repo. |
 
@@ -23,7 +23,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 | Criterio (peso) | Nota del otro proyecto | Montuno | Por qué |
 |---|---|---|---|
-| Problema y usuario (30%) | 4/10 | 🟡 | El problema está bien formulado en `PROYECTO.md`: pagar el 100% por adelantado a importadoras de WhatsApp. **Pero no hay ninguna validación ni cifra de mercado**, la misma debilidad que en Moontuno. |
+| Problema y usuario (30%) | 4/10 | 🟡 | El problema está descrito en el README: pagar el 100% por adelantado a importadoras de WhatsApp. **Pero no hay ninguna validación ni cifra de mercado**, la misma debilidad que en Moontuno. |
 | Producto funcionando (25%) | 6/10 | 🟡 a ✅ | El backend y el contrato están probados: 35 tests del contrato, 45 de la API y E2E en Testnet. Falta la interfaz (en construcción) y el video. |
 | Uso de Stellar (25%) | 5,5/10 | ✅ | Tiene **contrato Soroban propio** desplegado e inmutable, con hash de WASM publicado (`d369daf5…`). Usa USDC de Circle de Testnet, login SEP-53 verificado byte a byte contra `stellar message sign`, ID del contrato y hashes publicados, y un indexador de eventos sobre el RPC real. Trustless Work se está agregando como motor alternativo beta, que es un extra y no el núcleo. |
 | Equipo y compromiso (20%) | 5/10 | ❌ | No hay sección de equipo y el historial es muy corto: 3 commits grandes de un solo autor, el mismo patrón de "importado en bloque" que se le criticó al otro proyecto. |
@@ -32,11 +32,11 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 | Incongruencia (severidad) | Montuno | Detalle |
 |---|---|---|
-| Escrow presentado como funcional pero sin probar (alta) | ✅ | En Montuno está probado en Testnet y documentado así (README → "Estado"; `IMPLEMENTATION_STATUS.md` → "DEPLOYED"). El README solo marca como "sin probar" lo que efectivamente no se probó: el login real con Pollar. |
+| Escrow presentado como funcional pero sin probar (alta) | ✅ | En Montuno está probado en Testnet y documentado así en el README → "Estado". |
 | Etapa "producto en vivo" sin respaldo (media) | 🟡 | El README dice "MVP funcional en Stellar Testnet" y es coherente. Hay que verificar que el formulario diga lo mismo; desde el repo no se puede. |
 | Historial de commits en bloque y de un solo autor (media) | ❌ | Mismo riesgo: 3 commits del 22-11-2026, todos del mismo autor. Conviene trabajar en commits pequeños desde ahora (frontend, Trustless Work, docs) y, si hay más integrantes, que hagan PRs desde sus propias cuentas. |
 | Tres nombres para el mismo producto (baja) | ✅ | Un solo nombre, Montuno. Los identificadores técnicos heredados están justificados en el README ("Nombres heredados"). |
-| Estado de la IA desactualizado (baja) | ➖ | Montuno no tiene IA ni la promete en el README ni en `PROYECTO.md`. |
+| Estado de la IA desactualizado (baja) | ➖ | Montuno no tiene IA ni la promete en el README. |
 
 ## 4. Información que falta
 
@@ -45,7 +45,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 | Pitch deck | ❌ | No existe. |
 | Video de la demo | ❌ | No existe. |
 | Evidencia de validación (entrevistas, cartas, métricas) | ❌ | No existe. |
-| IDs de contrato y hashes de escrow en Testnet | ✅ | `docs/deployments/testnet.json`, `testnet-api-e2e.json` y `testnet-smoke.json`, enlazados desde el README e `IMPLEMENTATION_STATUS.md`. |
+| IDs de contrato y hashes de escrow en Testnet | ✅ | `docs/deployments/testnet.json`, `testnet-api-e2e.json` y `testnet-smoke.json`, enlazados desde el README. |
 | Estimación numérica del mercado | ❌ | No existe. |
 | Rol y aporte de cada integrante | ❌ | No hay sección "Equipo". |
 | Enlaces de tracción verificables | ❌ | Ninguno. |
@@ -56,9 +56,9 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 
 - **El escrow está probado de verdad**, no solo descrito: FULL, PARTIAL y la disputa tras anticipo se ejecutaron en Testnet con firmas reales, y hay 12 hashes publicados en la prueba de punta a punta por la API más los 9 del smoke test por CLI.
 - **Tiene contrato Soroban propio** (no delega en terceros), inmutable, con 35 tests (incluidas secuencias aleatorias) y hash del WASM publicado.
-- **Es honesto con el estado:** las tablas de "real o simulado" del README y de `IMPLEMENTATION_STATUS.md` coinciden con lo implementado.
+- **Es honesto con el estado:** la tabla de "real o simulado" del README resume lo implementado.
 - **La rampa entrega USDC de Testnet real** desde una caja, y el pago en BOB está marcado claramente como simulado.
-- **Tiene un nombre único** y la documentación es coherente (`PROYECTO.md` para no técnicos, README para desarrolladores).
+- **Tiene un nombre único** y el README reúne la descripción y las instrucciones para desarrolladores.
 
 ## 6. Plan priorizado antes del cierre
 

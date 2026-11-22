@@ -2,7 +2,7 @@
 
 Montuno permite que las importadoras pequeñas de Bolivia, que venden por WhatsApp y bajo pedido, cobren por adelantado **sin que el comprador tenga que confiar a ciegas**. La importadora manda un **enlace de checkout privado** y el pago queda en un **contrato inteligente (escrow) en Stellar** hasta que el pedido llega. La conversación y la venta siguen en WhatsApp; el catálogo solo muestra productos de referencia de importadoras verificadas para que el comprador pida una cotización.
 
-¿Qué problema resuelve, quién participa y por qué usa blockchain? Explicado sin tecnicismos en **[PROYECTO.md](PROYECTO.md)**.
+El problema, los participantes y el uso de blockchain se explican en la sección «Cómo funciona» y en la documentación enlazada abajo.
 
 Este es el monorepo del proyecto: la **web** (`apps/web`), la **API** (`apps/api`) y los **contratos inteligentes** (`contracts/`).
 
@@ -43,7 +43,7 @@ Es un **MVP funcional en Stellar Testnet**, la red de pruebas, donde el dinero n
 | Catálogo de referencia, proveedores y solicitudes de cotización | ✅ Implementado y probado |
 | Motor de escrow **Trustless Work** (alternativo, solo escrow completo) | 🟠 Beta: probado contra un servidor que imita su API v2; falta probarlo con una API key real |
 | Login con firma de wallet (SEP-53) | ✅ Real |
-| Login con correo vía Pollar (Pollar crea una wallet embebida que firma el desafío) | 🟠 Soportado por la API, sin probar con una cuenta real de Pollar |
+| Login con correo vía Pollar (wallet embebida que firma el desafío) | ✅ Real; falta validar con una cuenta real de Pollar |
 | Rampa BOB → USDC | 🟡 El pago en bolivianos es **simulado**; con `RAMP_PROVIDER=caja-testnet`, la entrega de USDC de Testnet es real |
 | KYC y OTP por correo | 🟡 Simulados (marcados `simulated: true`) |
 
@@ -53,7 +53,7 @@ Es un **MVP funcional en Stellar Testnet**, la red de pruebas, donde el dinero n
 - un árbitro multisig en lugar de uno solo;
 - una rampa real BOB → USDC hacia Stellar.
 
-Próximos pasos y detalle en [PROYECTO.md](PROYECTO.md#próximos-pasos). Evidencia de pruebas y pendientes técnicos en **[IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md)**.
+Pendientes para producción: auditoría, revisión legal y regulatoria, árbitro multisig y una rampa real BOB → USDC.
 
 ## Requisitos
 
@@ -163,7 +163,7 @@ guia.md                    especificación original del MVP
 
 ## Documentación
 
-[De qué trata el proyecto](PROYECTO.md) · [Web](docs/frontend.md) · [Arquitectura](docs/architecture.md) · [Máquinas de estado](docs/state-machines.md) · [Contrato](docs/contract.md) · [Flujo de firma](docs/signing-flow.md) · [Pollar](docs/pollar-integration.md) · [Seguridad y riesgo](docs/security-and-risk.md) · [Recorrido para jueces](docs/demo-jueces.md) · [Validación con usuarios](docs/validacion.md) · [Mercado](docs/mercado.md) · [Pitch](docs/pitch.md)
+[Web](docs/frontend.md) · [Arquitectura](docs/architecture.md) · [Máquinas de estado](docs/state-machines.md) · [Contrato](docs/contract.md) · [Flujo de firma](docs/signing-flow.md) · [Pollar](docs/pollar-integration.md) · [Seguridad y riesgo](docs/security-and-risk.md) · [Recorrido para jueces](docs/demo-jueces.md) · [Validación](docs/validacion.md) · [Mercado](docs/mercado.md) · [Pitch](docs/pitch.md)
 
 ## Nombres heredados
 
@@ -177,7 +177,7 @@ Montuno empezó con el nombre técnico `import-escrow`, y dos nombres se conserv
 | Integrante | Rol | Qué construyó |
 |---|---|---|
 | Luis Daniel Rojas Caceres (GitHub [daniel69zz](https://github.com/daniel69zz)) | Backend y contratos | [completar] |
-| Oziel Rodman Ramos Torrez | Full stack | [completar] |
+| Oziel Rodman Ramos Torrez (GitHub [ozioziel](https://github.com/ozioziel)) | Full stack | [completar] |
 | Daniel Boris Rueda | Backend | [completar] |
 
 ## Licencia

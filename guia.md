@@ -14,7 +14,7 @@ Entregables obligatorios:
 2. Contrato escrow implementado y cubierto por pruebas; scripts reproducibles de despliegue/invocación en Stellar **Testnet** y registro de direcciones/tx de despliegue cuando haya credenciales disponibles.
 3. Integraciones por adaptadores: Pollar real **solo donde la documentación y credenciales lo permitan**; mocks de autenticación/rampas en desarrollo y tests.
 4. Swagger/OpenAPI, colección de ejemplos HTTP, `.env.example`, comandos de ejecución, guía de transiciones y README actualizado con lo que realmente quedó implementado.
-5. Reporte `IMPLEMENTATION_STATUS.md` con funcionalidad completada, tests ejecutados, limitaciones, pendientes externos y decisiones de seguridad.
+5. Documentar en el README la funcionalidad completada, pruebas ejecutadas, limitaciones, pendientes externos y decisiones de seguridad.
 
 **No** desarrollar UI, marketplace, buscador de productos, sistema de tarjetas, préstamo, custodia de claves privadas, producción/Mainnet, o procesamiento real de bolivianos. Si algún requisito depende de acceso externo, implementar interfaz/adapter + mock reproducible y señalarlo claramente; **nunca simular éxito real** en endpoints de producción.
 
@@ -126,7 +126,6 @@ import-escrow-mvp/
 ├── docs/                   # API, arquitectura, modelos de riesgo, flujo de estados
 ├── docker-compose.yml
 ├── .env.example
-├── IMPLEMENTATION_STATUS.md
 └── README.md
 ```
 
@@ -499,7 +498,7 @@ Estas son **interfaces internas sugeridas**, no afirmaciones de que Pollar expon
 ### Fase 5 — endurecimiento y entrega
 
 - Auditoría manual, revisión de auth/race conditions, validación de consentimientos, manejo de errores y logs.
-- Ejecución de suite completa, reporte de resultados y `IMPLEMENTATION_STATUS.md`.
+- Ejecución de suite completa y documentación de resultados en el README.
 
 **Definición de terminado:** el backend arranca con un comando documentado, migraciones aplican, `cargo test` y tests API pasan, un usuario de Testnet puede financiar contrato y completar FULL y PARTIAL con firmas válidas, y no hay dependencia de rampas reales para reproducir los tests. Si no se desplegó por falta de credenciales, marcarlo `NOT DEPLOYED` y conservar scripts.
 
