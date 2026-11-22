@@ -1,4 +1,4 @@
-# IMPLEMENTATION_STATUS — Montuno (backend y contratos)
+# IMPLEMENTATION_STATUS — Montuno
 
 Fecha: 2026-11-22 · Alcance: Fases 1 a 5 de `guia.md` (backend + contrato + pruebas + Testnet). Sin frontend.
 

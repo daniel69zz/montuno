@@ -33,7 +33,7 @@ export function configureApp(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Montuno API (backend)')
     .setDescription(
-      'Backend de cotizaciones y escrow Soroban (Stellar TESTNET). Montuno: backend y contratos.',
+      'Backend de cotizaciones y escrow Soroban (Stellar TESTNET). Montuno: API del monorepo (escrow Soroban en Stellar Testnet).',
     )
     .setVersion('0.1.0')
     .addBearerAuth()

@@ -64,7 +64,11 @@ const post = (path: string, auth: { Authorization: string }, body: object = {}) 
 async function orderWithRamp(email: string) {
   const imp = await verifiedImporter(ctx, `imp-${email}`);
   const buyer = await actor(ctx, `buyer-${email}`);
-  const { token } = await publishQuote(ctx, imp, quoteBody('FULL_ESCROW', TOTAL, 0n, { serviceFeeAtomic: '0' }));
+  const { token } = await publishQuote(
+    ctx,
+    imp,
+    quoteBody('FULL_ESCROW', TOTAL, 0n, { serviceFeeAtomic: '0' }),
+  );
   const { orderId } = await acceptCheckout(ctx, buyer, token);
   return { imp, buyer, orderId };
 }
@@ -198,6 +202,19 @@ describe('validación de entorno de la caja', () => {
     STELLAR_ESCROW_TOKEN_CONTRACT_ID: 'C' + 'B'.repeat(55),
     STELLAR_ARBITER_ADDRESS: Keypair.random().publicKey(),
   };
+  it('rechaza los secretos de ejemplo de .env.example', () => {
+    expect(() =>
+      loadEnv({
+        ...process.env,
+        SESSION_SECRET: 'REPLACE_WITH_LONG_RANDOM_SECRET_AT_LEAST_32_CHARS',
+      }),
+    ).toThrow(/SESSION_SECRET/);
+    expect(() =>
+      loadEnv({ ...process.env, MOCK_WEBHOOK_SECRET: 'REPLACE_WITH_RANDOM_DEV_SECRET' }),
+    ).toThrow(/MOCK_WEBHOOK_SECRET/);
+    expect(loadEnv({ ...process.env, MOCK_WEBHOOK_SECRET: '' }).MOCK_WEBHOOK_SECRET).toBe('');
+  });
+
   it('exige soroban + clave, y se prohíbe en production', () => {
     const secret = Keypair.random().secret();
     expect(() =>

@@ -54,7 +54,8 @@ export class WebhooksController {
     @Headers('x-mock-signature') sig: string,
     @Body() body: { eventId: string; providerReference: string; outcome: 'COMPLETED' | 'FAILED' },
   ) {
-    if (this.env.NODE_ENV === 'production') throw new NotFoundException();
+    if (this.env.NODE_ENV === 'production' || !this.env.MOCK_WEBHOOK_SECRET)
+      throw new NotFoundException();
     const raw = req.rawBody?.toString('utf8') ?? '';
     const t = Number(ts);
     const now = Math.floor(Date.now() / 1000);

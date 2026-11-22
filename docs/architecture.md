@@ -1,6 +1,6 @@
 # Arquitectura
 
-> Montuno: backend y contratos. El crate `import_escrow` y los prefijos `import-escrow/*/v1` de los hashes son nombres heredados que se mantienen a propósito (ver README).
+> Montuno (monorepo: API y contratos; el frontend irá en `apps/web`). El crate `import_escrow` y los prefijos `import-escrow/*/v1` de los hashes son nombres heredados que se mantienen a propósito (ver README).
 
 ## Vista general
 

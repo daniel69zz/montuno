@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+// Rechaza los valores de ejemplo de .env.example (secretos conocidos públicamente).
+const PLACEHOLDER = /REPLACE_WITH|CHANGE[_-]?ME/i;
+const secret = (name: string, min: number) =>
+  z
+    .string()
+    .min(min, `${name} debe tener al menos ${min} caracteres`)
+    .refine(
+      (v) => !PLACEHOLDER.test(v),
+      `${name} tiene el valor de ejemplo: genera uno con \`openssl rand -hex 32\``,
+    );
+
 // Validación estricta de variables de entorno al arrancar (fail-fast).
 const bool = z
   .enum(['true', 'false'])
@@ -12,7 +23,7 @@ export const EnvSchema = z
     API_PORT: z.coerce.number().int().positive().default(3000),
     DATABASE_URL: z.string().url(),
     REDIS_URL: z.string().optional(),
-    SESSION_SECRET: z.string().min(32, 'SESSION_SECRET debe tener al menos 32 caracteres'),
+    SESSION_SECRET: secret('SESSION_SECRET', 32),
     SESSION_TTL_SECONDS: z.coerce.number().int().positive().default(3600),
     FRONTEND_ORIGIN: z.string().default('http://localhost:3001'),
     PUBLIC_CHECKOUT_BASE_URL: z.string().default('http://localhost:3001/checkout'),
@@ -71,7 +82,8 @@ export const EnvSchema = z
       .regex(/^[1-9][0-9]{0,17}$/)
       .default('5000000000'),
     MOCK_KYC_AUTO_APPROVE: bool,
-    MOCK_WEBHOOK_SECRET: z.string().min(16).default('dev-mock-webhook-secret-change-me'),
+    /** Vacío = el webhook de desarrollo /webhooks/mock-ramp queda deshabilitado. */
+    MOCK_WEBHOOK_SECRET: secret('MOCK_WEBHOOK_SECRET', 16).or(z.literal('')).default(''),
 
     OBJECT_STORAGE_PROVIDER: z.enum(['local']).default('local'),
     OBJECT_STORAGE_BUCKET: z.string().default('montuno-dev'),

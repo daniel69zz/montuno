@@ -1,7 +1,7 @@
 {
-  "name": "montuno-backend",
+  "name": "montuno",
   "private": true,
-  "description": "Montuno: backend (API NestJS) y contratos Soroban. Stellar Testnet.",
+  "description": "Montuno: monorepo con la API (NestJS), los contratos Soroban y, m\u00e1s adelante, el frontend. Stellar Testnet.",
   "workspaces": [
     "packages/shared",
     "apps/api"
