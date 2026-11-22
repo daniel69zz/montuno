@@ -1,6 +1,6 @@
 # Validación con usuarios
 
-> **Estado: entrevistas exploratorias realizadas.** El equipo reporta conversaciones en La Paz y El Alto, con una recepción general positiva de la propuesta. Falta sistematizar el número de participantes, fechas, perfiles, respuestas por pregunta y citas textuales; por eso no se presentan porcentajes ni cifras de mercado.
+> **Estado: entrevistas exploratorias realizadas.** Se entrevistó a **10 personas en total** en La Paz y El Alto. El equipo reporta una recepción general positiva de la propuesta. Falta sistematizar cuántas eran compradoras o importadoras, además de fechas, perfiles, respuestas por pregunta y citas textuales; por eso no se presentan porcentajes ni cifras de mercado.
 
 ## Objetivo
 
@@ -87,9 +87,10 @@ La valoración positiva que reportó el equipo es cualitativa y general. No se a
 ## Resumen de la primera ronda
 
 - **Ciudades:** La Paz y El Alto.
+- **Personas entrevistadas:** 10 en total; falta confirmar el desglose entre compradores e importadoras.
 - **Resultado general:** el equipo reporta que las conversaciones fueron bien y que la recepción de la propuesta fue positiva.
 - **Lectura actual:** hay una señal cualitativa inicial para seguir explorando el problema y probar la propuesta con más personas.
-- **Pendiente de sistematizar:** cantidad de importadoras y compradores, fechas, perfil de participantes, respuestas por pregunta, citas autorizadas y cualquier objeción recurrente.
+- **Pendiente de sistematizar:** desglose entre importadoras y compradores, fechas, perfil de participantes, respuestas por pregunta, citas autorizadas y cualquier objeción recurrente.
 
 La valoración positiva no permite todavía calcular porcentajes, disposición a pagar ni tamaño de mercado. Cuando se consoliden las notas, completar las tablas con respuestas reales y actualizar el resumen con numeradores y denominadores.
 

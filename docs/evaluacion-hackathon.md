@@ -13,7 +13,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 | # | Recomendación | Montuno | Evidencia o qué falta |
 |---|---|---|---|
 | 1 | Ejecutar el escrow de punta a punta en Testnet y publicar la evidencia | ✅ | Contrato propio `CA3CWIHORCCANE73NITO5T2I652SGR4SOUZDMHXVQUH5T4DGX7YJQCTR`, con el USDC de Circle de Testnet (`CBIELTK6…DAMA`). La prueba de punta a punta por la API (`docs/deployments/testnet-api-e2e.json`, 2026-11-22T14:09Z) tiene 12 transacciones con firmas reales: FULL (`d4d0134d…` fund, `0a2ac6ea…` release), PARTIAL (`0cad6a7e…` fund, `b47fdc01…` anticipo, `a9801a1d…` release) y una disputa resuelta por el árbitro (`fd4d69d3…` abre, `7911055e…` resuelve). Además, un smoke test por CLI con 9 pasos (`testnet-smoke.json`). La evidencia está enlazada desde el README. |
-| 2 | Validar el problema con usuarios y proveedores reales | 🟡 | El equipo reporta entrevistas exploratorias con recepción positiva en La Paz y El Alto. `docs/validacion.md` aún no contiene cantidad de participantes ni respuestas individuales que permitan revisar la evidencia. |
+| 2 | Validar el problema con usuarios y proveedores reales | 🟡 | El equipo reporta 10 entrevistas exploratorias en La Paz y El Alto, con recepción positiva. `docs/validacion.md` aún no contiene el desglose por tipo de participante ni respuestas individuales que permitan revisar la evidencia. |
 | 3 | Demo verificable sin JavaScript, video y cuenta de prueba | 🟡 | Hay una guía reproducible (`README.md` → Testnet; `scripts/testnet/*.sh`) y una colección HTTP (`docs/http/requests.http`). Pero el frontend (`apps/web`) **está en construcción** y no hay video, ni landing estática, ni credenciales de prueba para jueces. |
 | 4 | Etapa honesta y nombre único | 🟡 | El nombre está unificado: "Montuno" en el repo (`daniel69zz/montuno`) y el README. Los nombres técnicos heredados (`import_escrow`, prefijos `import-escrow/*/v1`) están explicados en el README. La etapa es "MVP funcional en Stellar Testnet", así que el formulario debe declarar **MVP en Testnet**, no "producto en vivo". El formulario no se puede revisar desde el repo. |
 | 5 | Mostrar el aporte de cada integrante | ❌ | No hay sección "Equipo" en el README. `git log` muestra 3 commits, todos de Luis Daniel (`bed1802`, `36fc8ac`, `b356ce8`, del 22-11-2026). |
@@ -44,7 +44,7 @@ Leyenda: ✅ cubierto · 🟡 parcial · ❌ no cubierto · ➖ no aplica.
 |---|---|---|
 | Pitch deck | ❌ | No existe. |
 | Video de la demo | ❌ | No existe. |
-| Evidencia de validación (entrevistas, cartas, métricas) | 🟡 | Hay un resumen cualitativo reportado por el equipo; faltan cantidad de participantes, notas anonimizadas y métricas. |
+| Evidencia de validación (entrevistas, cartas, métricas) | 🟡 | Hay un resumen cualitativo de 10 entrevistas reportadas por el equipo; faltan desglose por tipo de participante, notas anonimizadas y métricas. |
 | IDs de contrato y hashes de escrow en Testnet | ✅ | `docs/deployments/testnet.json`, `testnet-api-e2e.json` y `testnet-smoke.json`, enlazados desde el README. |
 | Estimación numérica del mercado | ❌ | No existe. |
 | Rol y aporte de cada integrante | ❌ | No hay sección "Equipo". |
@@ -105,7 +105,7 @@ Formato del resumen: "X de Y importadoras cobran el 100% adelantado", "X de Y co
 
 | Acción del plan | Archivo | Qué contiene |
 |---|---|---|
-| 1 · Validación | [`docs/validacion.md`](validacion.md) | Guía de entrevistas, preguntas para importadoras (I1–I9) y compradores (C1–C8), resumen cualitativo de la primera ronda en La Paz y El Alto, y tablas pendientes de sistematizar |
+| 1 · Validación | [`docs/validacion.md`](validacion.md) | Guía de entrevistas, preguntas para importadoras (I1–I9) y compradores (C1–C8), resumen cualitativo de 10 entrevistas en La Paz y El Alto, y tablas pendientes de sistematizar |
 | 2 · Video | [`docs/demo-jueces.md`](demo-jueces.md) | Guion de 2–3 minutos con escenas, qué mostrar y qué decir, basado en las transacciones reales |
 | 3 · Demo verificable | [`docs/demo-jueces.md`](demo-jueces.md) | Recorrido de menos de 2 minutos con enlaces a stellar.expert (contrato, 12 transacciones del E2E por API y 9 del smoke por CLI), verificación en 3 clics y comandos local/Testnet |
 | 4 · Equipo | `README.md` → "Equipo" | Tabla con tu fila (Luis Daniel Rojas Caceres, daniel69zz) y placeholders de rol y aporte |
